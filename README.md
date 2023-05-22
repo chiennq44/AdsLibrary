@@ -12,7 +12,7 @@
 <h5>Implement library in your app level build.gradle:</h5>
 <pre>
  dependencies {
-   implementation 'com.github.NLBN:NlbnAdsLibrary:Tag'
+    implementation 'com.github.chiennq44:AdsLibrary:Tag'
     implementation 'com.google.android.gms:play-services-ads:22.1.0'
     //multidex
     implementation "androidx.multidex:multidex:2.0.1"
