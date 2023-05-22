@@ -1,4 +1,4 @@
-package com.nlbn.admobMeditationSdk.adx;
+package com.amazic.admobMeditationSdk.admob;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,12 +8,12 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.nlbn.admobMeditationSdk.util.FirebaseAnalyticsUtil;
+import com.amazic.admobMeditationSdk.util.FirebaseAnalyticsUtil;
 import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.admanager.AdManagerAdRequest;
-import com.google.android.gms.ads.admanager.AdManagerAdView;
 import com.google.android.gms.ads.mediation.MediationAdRequest;
 import com.google.android.gms.ads.mediation.customevent.CustomEventBanner;
 import com.google.android.gms.ads.mediation.customevent.CustomEventBannerListener;
@@ -21,12 +21,12 @@ import com.google.android.gms.ads.mediation.customevent.CustomEventBannerListene
 public class banner implements CustomEventBanner
 {
     private String Tag = "SDKCustom Banner";
-    private AdManagerAdView adView;
+    private AdView adView;
     @Override
     public void requestBannerAd(@NonNull Context context, @NonNull CustomEventBannerListener customEventBannerListener, @Nullable String s, @NonNull AdSize adSize, @NonNull MediationAdRequest mediationAdRequest, @Nullable Bundle bundle) {
         Log.e(Tag, "ID :"+s );
-        FirebaseAnalyticsUtil.logEventMediationAdx(context,FirebaseAnalyticsUtil.BANNER);
-        adView = new AdManagerAdView(context);
+        FirebaseAnalyticsUtil.logEventMediationAdmob(context,FirebaseAnalyticsUtil.BANNER);
+        adView = new AdView(context);
         adView.setAdUnitId(s);
         adView.setAdSize(adSize);
         adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
@@ -72,7 +72,7 @@ public class banner implements CustomEventBanner
             }
 
         });
-        adView.loadAd(new AdManagerAdRequest.Builder().build());
+        adView.loadAd(getAdRequest());
     }
 
     @Override
@@ -88,4 +88,8 @@ public class banner implements CustomEventBanner
 
     }
 
+    public AdRequest getAdRequest() {
+        AdRequest.Builder builder = new AdRequest.Builder();
+        return builder.build();
+    }
 }
