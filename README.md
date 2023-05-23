@@ -26,7 +26,7 @@
 <pre>
      < meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-4973559944609228~2346710863" />
+            android:value="@string/app_id" />
 </pre>
 <h3><li>Init aplication</br></h3>
 <pre> < application
@@ -36,6 +36,10 @@
    .../></pre>
 <pre>
     public class MyApplication extends AsdApplication {
+     override fun onCreate() {
+        super.onCreate()
+        AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity::class.java)
+    }
     @Override
     public boolean enableAdsResume() {
         return true;
