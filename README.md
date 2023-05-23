@@ -168,14 +168,16 @@
             @Override
             public void onNativeAdLoaded(NativeAd nativeAd) {
                 NativeAdView adView = ( NativeAdView) LayoutInflater.from(MainActivity.this).inflate(R.layout.layout_native, null);
-                native_ads.addView(adView);
+                fr_ads1.removeAllViews();
+                fr_ads1.addView(adView);
                 Admob.getInstance().pushAdsToViewCustom(nativeAd, adView);
             }
-        });
-           @Override
+             @Override
                 public void onAdFailedToLoad() {
                     fr_ads1.removeAllViews();
                 }
+        });
+          
 </pre>
 
 </div>
