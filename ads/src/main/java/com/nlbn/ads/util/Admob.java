@@ -947,6 +947,13 @@ public class Admob {
                 FirebaseUtil.logClickAdsEvent(context, mInterstitialSplash.getAdUnitId());
             }
         });
+
+        if (mInterstitialSplash == null) {
+            adListener.onAdClosed();
+            adListener.onNextAction();
+            return;
+        }
+
         if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
             try {
                 if (dialog != null && dialog.isShowing())
@@ -981,9 +988,25 @@ public class Admob {
                 }
 
                 if(activity!=null){
-                    mInterstitialSplash.show(activity);
+                    if (mInterstitialSplash!=null) {
+                        mInterstitialSplash.show(activity);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (dialog != null && dialog.isShowing() )
+                                    dialog.dismiss();
+                            }
+                        }, 1000);
+                    }else {
+                        if (dialog != null) {
+                            dialog.dismiss();
+                        }
+                        adListener.onAdClosed();
+                        adListener.onNextAction();
+                        isShowLoadingSplash = false;
+                    }
                     Log.e(TAG, "onShowSplash: mInterstitialSplash.show");
-                    isShowLoadingSplash = false;
+
                 }else if (adListener != null) {
                     if (dialog != null) {
                         dialog.dismiss();
