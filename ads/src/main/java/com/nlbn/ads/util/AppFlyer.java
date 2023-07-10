@@ -41,7 +41,7 @@ public class AppFlyer {
     }
 
     public void pushTrackEventAdmod(AdValue adValue, String adId, String adType) {
-        Log.e(TAG, "Log tracking event AppFlyer: enableAppFlyer:" + this.enableTrackingAppFlyerRevenue + " --- value: " + adValue.getValueMicros() / 1000000);
+        Log.e(TAG, "Log tracking event AppFlyer: enableAppFlyer:" + this.enableTrackingAppFlyerRevenue + " --- AdType: " + adType + " --- value: " + adValue.getValueMicros() / 1000000);
         if (enableTrackingAppFlyerRevenue) {
             Map<String, String> customParams = new HashMap<>();
             customParams.put(Scheme.AD_UNIT, adId);

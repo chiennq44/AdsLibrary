@@ -14,6 +14,7 @@ public class MyApplication extends AdsApplication {
     public void onCreate() {
         super.onCreate();
         AppOpenManager.getInstance().disableAppResumeWithActivity(Splash.class);
+        AppFlyer.getInstance().initAppFlyer(this, "", true);
     }
 
     @Override

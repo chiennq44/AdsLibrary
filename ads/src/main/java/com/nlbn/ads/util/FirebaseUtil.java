@@ -23,8 +23,8 @@ public class FirebaseUtil {
 
     public static void logPaidAdImpression(Context context, AdValue adValue, String adUnitId, String mediationAdapterClassName) {
         Log.e("logPaidAdImpression", adValue.getCurrencyCode() + "");
-        logEventWithAds(context, (float) adValue.getValueMicros(), adValue.getPrecisionType(), adUnitId, mediationAdapterClassName, adValue.getCurrencyCode());
         AppFlyer.getInstance().pushTrackEventAdmod(adValue, adUnitId, mediationAdapterClassName);
+        logEventWithAds(context, (float) adValue.getValueMicros(), adValue.getPrecisionType(), adUnitId, mediationAdapterClassName, adValue.getCurrencyCode());
     }
 
     private static void logEventWithAds(Context context, float revenue, int precision, String adUnitId, String network, String mediationProvider) {
