@@ -22,11 +22,12 @@ public class FirebaseUtil {
     }
 
     public static void logPaidAdImpression(Context context, AdValue adValue, String adUnitId, String mediationAdapterClassName) {
-        Log.e("logPaidAdImpression",adValue.getCurrencyCode()+"");
-        logEventWithAds(context, (float) adValue.getValueMicros(), adValue.getPrecisionType(), adUnitId, mediationAdapterClassName,adValue.getCurrencyCode());
+        Log.e("logPaidAdImpression", adValue.getCurrencyCode() + "");
+        logEventWithAds(context, (float) adValue.getValueMicros(), adValue.getPrecisionType(), adUnitId, mediationAdapterClassName, adValue.getCurrencyCode());
+        AppFlyer.getInstance().pushTrackEventAdmod(adValue, adUnitId, mediationAdapterClassName);
     }
 
-    private static void logEventWithAds(Context context, float revenue, int precision, String adUnitId, String network, String  mediationProvider) {
+    private static void logEventWithAds(Context context, float revenue, int precision, String adUnitId, String network, String mediationProvider) {
         Log.d(TAG, String.format(
                 "Paid event of value %.0f microcents in currency USD of precision %s%n occurred for ad unit %s from ad network %s.mediation provider: %s%n",
                 revenue,
@@ -50,7 +51,7 @@ public class FirebaseUtil {
         // update current tota
         // l revenue ads
         SharePreferenceUtils.updateCurrentTotalRevenueAd(context, (float) revenue);
-       // logCurrentTotalRevenueAd(context, "event_current_total_revenue_ad");
+        // logCurrentTotalRevenueAd(context, "event_current_total_revenue_ad");
 
         // update current total revenue ads for event paid_ad_impression_value_0.01
         AppUtil.currentTotalRevenue001Ad += revenue;
@@ -85,7 +86,7 @@ public class FirebaseUtil {
         }
     }
 
-    public static void logTimeLoadAdsSplash(Context context,int timeLoad){
+    public static void logTimeLoadAdsSplash(Context context, int timeLoad) {
         Log.d(TAG, String.format(
                 "Time load ads splash %s.",
                 timeLoad));
@@ -94,7 +95,7 @@ public class FirebaseUtil {
         FirebaseAnalytics.getInstance(context).logEvent("event_time_load_ads_splash", bundle);
     }
 
-    public static void logTimeLoadShowAdsInter(Context context,double timeLoad){
+    public static void logTimeLoadShowAdsInter(Context context, double timeLoad) {
         Log.d(TAG, String.format(
                 "Time show ads  %s",
                 timeLoad));

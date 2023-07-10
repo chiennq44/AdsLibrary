@@ -1,6 +1,7 @@
 package com.nlbnadslibrary;
 
 import com.nlbn.ads.billing.AppPurchase;
+import com.nlbn.ads.util.AppFlyer;
 import com.nlbn.ads.util.AppOpenManager;
 import com.nlbn.ads.util.AdsApplication;
 import com.nlbn.ads.util.AppUtil;

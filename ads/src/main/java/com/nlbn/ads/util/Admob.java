@@ -30,15 +30,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
-import com.nlbn.ads.BuildConfig;
-import com.nlbn.ads.R;
-import com.nlbn.ads.billing.AppPurchase;
-import com.nlbn.ads.callback.AdCallback;
-import com.nlbn.ads.callback.BannerCallBack;
-import com.nlbn.ads.callback.InterCallback;
-import com.nlbn.ads.callback.NativeCallback;
-import com.nlbn.ads.callback.RewardCallback;
-import com.nlbn.ads.dialog.LoadingAdsDialog;
+import com.appsflyer.AppsFlyerLib;
+import com.appsflyer.adrevenue.AppsFlyerAdRevenue;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdError;
@@ -61,14 +54,19 @@ import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.nlbn.ads.BuildConfig;
+import com.nlbn.ads.R;
+import com.nlbn.ads.billing.AppPurchase;
+import com.nlbn.ads.callback.AdCallback;
 import com.nlbn.ads.callback.InterCallback;
+import com.nlbn.ads.callback.NativeCallback;
+import com.nlbn.ads.callback.RewardCallback;
 import com.nlbn.ads.dialog.LoadingAdsDialog;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
