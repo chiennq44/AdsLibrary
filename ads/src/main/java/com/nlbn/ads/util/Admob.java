@@ -863,9 +863,17 @@ public class Admob {
 
     }
 
+    public void LoadingDialogDismiss(){
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
+    }
+
     private void onShowSplash(Activity activity, InterCallback adListener) {
+        Log.e(TAG, "onShowSplash: start");
         isShowLoadingSplash = true;
         if (mInterstitialSplash == null) {
+            if (dialog != null && dialog.isShowing())
+                dialog.dismiss();
             adListener.onAdClosed();
             adListener.onNextAction();
             return;
@@ -875,7 +883,7 @@ public class Admob {
             FirebaseUtil.logPaidAdImpression(context,
                     adValue,
                     mInterstitialSplash.getAdUnitId(), "inter");
-            adListener.onEarnRevenue( (double) adValue.getValueMicros());
+            adListener.onEarnRevenue((double) adValue.getValueMicros());
         });
 
         if (handlerTimeout != null && rdTimeout != null) {
@@ -889,50 +897,53 @@ public class Admob {
         mInterstitialSplash.setFullScreenContentCallback(new FullScreenContentCallback() {
             @Override
             public void onAdShowedFullScreenContent() {
-                isShowLoadingSplash = false;
-                if(logTimeLoadAdsSplash){
-                    long timeLoad = System.currentTimeMillis() -  currentTime;
-                    Log.e(TAG, "load ads time :"+timeLoad);
-                    FirebaseUtil.logTimeLoadAdsSplash(activity,round1000(timeLoad));
+                isShowLoadingSplash = true;
+                Log.e(TAG, "onAdShowedFullScreenContent ");
+                if (logTimeLoadAdsSplash) {
+                    long timeLoad = System.currentTimeMillis() - currentTime;
+                    Log.e(TAG, "load ads time :" + timeLoad);
+                    FirebaseUtil.logTimeLoadAdsSplash(activity, round1000(timeLoad));
                 }
+
+
             }
 
             @Override
             public void onAdDismissedFullScreenContent() {
-                Log.e(TAG,"DismissedFullScreenContent Splash");
+                Log.e(TAG, "DismissedFullScreenContent Splash");
                 if (AppOpenManager.getInstance().isInitialized()) {
                     AppOpenManager.getInstance().enableAppResume();
                 }
+
+                if (dialog != null && dialog.isShowing())
+                    dialog.dismiss();
                 if (adListener != null) {
                     if (!openActivityAfterShowInterAds) {
                         adListener.onAdClosed();
                         adListener.onNextAction();
-                    }else {
+                    } else {
                         adListener.onAdClosedByUser();
-                    }
-
-                    if (dialog != null) {
-                        dialog.dismiss();
                     }
 
                 }
                 mInterstitialSplash = null;
-                isShowLoadingSplash = false;
+                isShowLoadingSplash = true;
             }
 
             @Override
             public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
                 mInterstitialSplash = null;
                 isShowLoadingSplash = false;
+                Log.e(TAG, "onAdFailedToShowFullScreenContent Splash");
+                if (dialog != null && dialog.isShowing())
+                    dialog.dismiss();
                 if (adListener != null) {
                     if (!openActivityAfterShowInterAds) {
                         adListener.onAdFailedToShow(adError);
                         adListener.onNextAction();
                     }
 
-                    if (dialog != null) {
-                        dialog.dismiss();
-                    }
+
                 }
             }
 
@@ -941,23 +952,28 @@ public class Admob {
                 super.onAdClicked();
                 if (disableAdResumeWhenClickAds)
                     AppOpenManager.getInstance().disableAdResumeByClickAction();
-                if(timeLimitAds>1000){setTimeLimitInter();}
+                if (timeLimitAds > 1000) {
+                    setTimeLimitInter();
+                }
                 FirebaseUtil.logClickAdsEvent(context, mInterstitialSplash.getAdUnitId());
             }
         });
+        Log.e(TAG, "onShowSplash: dialog");
 
         if (mInterstitialSplash == null) {
+            if (dialog != null && dialog.isShowing())
+                dialog.dismiss();
             adListener.onAdClosed();
             adListener.onNextAction();
             return;
         }
-
         if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
             try {
                 if (dialog != null && dialog.isShowing())
                     dialog.dismiss();
                 dialog = new LoadingAdsDialog(activity);
                 try {
+                    Log.e(TAG, "onShowSplash: dialog.show");
                     dialog.show();
                 } catch (Exception e) {
                     adListener.onAdClosed();
@@ -965,6 +981,7 @@ public class Admob {
                     return;
                 }
             } catch (Exception e) {
+                Log.e(TAG, "onShowSplash: dialog.Exception");
                 dialog = null;
                 e.printStackTrace();
             }
@@ -974,47 +991,45 @@ public class Admob {
                 }
 
                 if (openActivityAfterShowInterAds && adListener != null) {
+
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            if (dialog != null && dialog.isShowing() && !activity.isDestroyed()) {
+//                                dialog.dismiss();
+//                                Log.e(TAG, "onShowSplash: dialog.dismiss1");
+//                            }
+//                        }
+//                    }, 1500);
                     adListener.onAdClosed();
                     adListener.onNextAction();
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (dialog != null && dialog.isShowing() && !activity.isDestroyed())
-                                dialog.dismiss();
-                        }
-                    }, 1500);
+
+
                 }
 
-                if(activity!=null){
-                    if (mInterstitialSplash!=null) {
+                if (activity != null) {
+                    if (mInterstitialSplash != null) {
                         mInterstitialSplash.show(activity);
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (dialog != null && dialog.isShowing() )
-                                    dialog.dismiss();
-                            }
-                        }, 1000);
-                    }else {
-                        if (dialog != null) {
+                    } else {
+                        if (dialog != null && dialog.isShowing()) {
                             dialog.dismiss();
+                            Log.e(TAG, "onShowSplash: dialog.dismiss");
                         }
                         adListener.onAdClosed();
                         adListener.onNextAction();
                         isShowLoadingSplash = false;
                     }
                     Log.e(TAG, "onShowSplash: mInterstitialSplash.show");
-
-                }else if (adListener != null) {
-                    if (dialog != null) {
+                } else if (adListener != null) {
+                    Log.e(TAG, "onShowSplash: adListener");
+                    if (dialog != null && dialog.isShowing())
                         dialog.dismiss();
-                    }
                     adListener.onAdClosed();
                     adListener.onNextAction();
                     isShowLoadingSplash = false;
                 }
             }, 500);
-        }else{
+        } else {
             isShowLoadingSplash = false;
             Log.e(TAG, "onShowSplash: fail on background");
         }

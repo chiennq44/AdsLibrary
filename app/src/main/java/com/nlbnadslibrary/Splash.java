@@ -55,6 +55,18 @@ public class Splash extends AppCompatActivity {
         initBilling();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Admob.getInstance().LoadingDialogDismiss();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Admob.getInstance().LoadingDialogDismiss();
+    }
+
     private void initBilling() {
         List<String> listINAPId = new ArrayList<>();
         listINAPId.add(PRODUCT_ID_MONTH);
