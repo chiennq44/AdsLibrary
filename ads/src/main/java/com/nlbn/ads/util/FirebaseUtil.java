@@ -21,10 +21,10 @@ public class FirebaseUtil {
         FacebookEventUtils.logClickAdsEvent(context, bundle);
     }
 
-    public static void logPaidAdImpression(Context context, AdValue adValue, String adUnitId, String mediationAdapterClassName) {
+    public static void logPaidAdImpression(Context context, AdValue adValue, String adUnitId, AdType adType) {
         Log.e("logPaidAdImpression", adValue.getCurrencyCode() + "");
-        AppFlyer.getInstance().pushTrackEventAdmod(adValue, adUnitId, mediationAdapterClassName);
-        logEventWithAds(context, (float) adValue.getValueMicros(), adValue.getPrecisionType(), adUnitId, mediationAdapterClassName, adValue.getCurrencyCode());
+        AppFlyer.getInstance().pushTrackEventAdmod(adValue, adUnitId, adType.toString());
+        logEventWithAds(context, (float) adValue.getValueMicros(), adValue.getPrecisionType(), adUnitId, adType.toString(), adValue.getCurrencyCode());
     }
 
     private static void logEventWithAds(Context context, float revenue, int precision, String adUnitId, String network, String mediationProvider) {

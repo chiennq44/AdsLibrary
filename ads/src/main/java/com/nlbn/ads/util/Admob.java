@@ -415,7 +415,7 @@ public class Admob {
 
                             FirebaseUtil.logPaidAdImpression(context,
                                     adValue,
-                                    adView.getAdUnitId(),"banner");
+                                    adView.getAdUnitId(),AdType.BANNER);
                         });
                     }
                 }
@@ -479,7 +479,7 @@ public class Admob {
 
                         FirebaseUtil.logPaidAdImpression(context,
                                 adValue,
-                                adView.getAdUnitId(), "banner");
+                                adView.getAdUnitId(), AdType.BANNER);
                     });
 
                 }
@@ -639,7 +639,7 @@ public class Admob {
                                 Log.d(TAG, "OnPaidEvent loadInterstitialAds:" + adValue.getValueMicros());
                                 FirebaseUtil.logPaidAdImpression(context,
                                         adValue,
-                                        interstitialAd.getAdUnitId(), "banner");
+                                        interstitialAd.getAdUnitId(), AdType.BANNER);
                             });
                         }
                     }
@@ -731,7 +731,7 @@ public class Admob {
                     Log.d(TAG, "OnPaidEvent splash:" + adValue.getValueMicros());
                     FirebaseUtil.logPaidAdImpression(context,
                             adValue,
-                            mInterstitialSplash.getAdUnitId(), "inter");
+                            mInterstitialSplash.getAdUnitId(), AdType.INTERSTITIAL);
                     adListener.onEarnRevenue( (double) adValue.getValueMicros());
                 });
 
@@ -882,7 +882,7 @@ public class Admob {
             Log.d(TAG, "OnPaidEvent splash:" + adValue.getValueMicros());
             FirebaseUtil.logPaidAdImpression(context,
                     adValue,
-                    mInterstitialSplash.getAdUnitId(), "inter");
+                    mInterstitialSplash.getAdUnitId(), AdType.INTERSTITIAL);
             adListener.onEarnRevenue((double) adValue.getValueMicros());
         });
 
@@ -1066,7 +1066,7 @@ public class Admob {
                                 Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                                 FirebaseUtil.logPaidAdImpression(context,
                                         adValue,
-                                        interstitialAd.getAdUnitId(), "inter");
+                                        interstitialAd.getAdUnitId(), AdType.INTERSTITIAL);
                                 adCallback.onEarnRevenue( (double) adValue.getValueMicros());
                             });
                         }
@@ -1418,7 +1418,7 @@ public class Admob {
                     FirebaseUtil.logPaidAdImpression(context,
                             adValue,
                             rewardedAd.getAdUnitId(),
-                            "rewardedAd");
+                            AdType.REWARDED);
                 });
             }
             @Override
@@ -1461,7 +1461,7 @@ public class Admob {
                                     FirebaseUtil.logPaidAdImpression(context,
                                             adValue,
                                             id,
-                                            "native");
+                                            AdType.NATIVE);
                                     callback.onEarnRevenue((double) adValue.getValueMicros());
                                 });
                             }
@@ -1516,7 +1516,7 @@ public class Admob {
                         FirebaseUtil.logPaidAdImpression(context,
                                 adValue,
                                 listID.get(0),
-                                "native");
+                                AdType.NATIVE);
                         callback.onEarnRevenue((double) adValue.getValueMicros());
                     });
                 }
@@ -1706,7 +1706,7 @@ public class Admob {
                             FirebaseUtil.logPaidAdImpression(context,
                                     adValue,
                                     id,
-                                    "native");
+                                    AdType.NATIVE);
                         });
                     }
 

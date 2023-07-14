@@ -137,7 +137,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     /**
      * Call disable ad resume when click a button, auto enable ad resume in next start
      */
-    public void disableAdResumeByClickAction(){
+    public void disableAdResumeByClickAction() {
         disableAdResumeByClickAction = true;
     }
 
@@ -228,8 +228,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                 FirebaseUtil.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         ad.getAdUnitId(),
-                                        ad.getResponseInfo()
-                                                .getMediationAdapterClassName());
+                                        AdType.APP_OPEN);
                             });
                             AppOpenManager.this.splashLoadTime = (new Date()).getTime();
                         }
@@ -325,7 +324,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     @Override
     public void onActivityDestroyed(Activity activity) {
         currentActivity = null;
-        Log.d(TAG, "onActivityDestroyed: null" );
+        Log.d(TAG, "onActivityDestroyed: null");
     }
 
     public void showAdIfAvailable(final boolean isSplash) {
@@ -384,7 +383,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             }
             final Dialog finalDialog = dialog;
             new Handler().postDelayed(() -> {
-                if(splashAd != null){
+                if (splashAd != null) {
                     splashAd.setFullScreenContentCallback(
                             new FullScreenContentCallback() {
                                 @Override
@@ -421,7 +420,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                     super.onAdClicked();
                                     if (currentActivity != null) {
                                         FirebaseUtil.logClickAdsEvent(currentActivity, splashAdId);
-                                        if (fullScreenContentCallback!= null) {
+                                        if (fullScreenContentCallback != null) {
                                             fullScreenContentCallback.onAdClicked();
                                         }
                                     }
@@ -513,7 +512,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         super.onAdClicked();
                         if (currentActivity != null) {
                             FirebaseUtil.logClickAdsEvent(currentActivity, appResumeAdId);
-                            if (fullScreenContentCallback!= null) {
+                            if (fullScreenContentCallback != null) {
                                 fullScreenContentCallback.onAdClicked();
                             }
                         }
@@ -523,7 +522,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                     public void onAdImpression() {
                         super.onAdImpression();
                         if (currentActivity != null) {
-                            if (fullScreenContentCallback!= null) {
+                            if (fullScreenContentCallback != null) {
                                 fullScreenContentCallback.onAdImpression();
                             }
                         }
@@ -571,8 +570,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                 FirebaseUtil.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         appOpenAd.getAdUnitId(),
-                                        appOpenAd.getResponseInfo()
-                                                .getMediationAdapterClassName());
+                                        AdType.APP_OPEN);
                             });
 
                             showAdIfAvailable(true);
@@ -628,12 +626,12 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             return;
         }
 
-        if (isInterstitialShowing){
+        if (isInterstitialShowing) {
             Log.d(TAG, "onResume: interstitial is showing");
             return;
         }
 
-        if (disableAdResumeByClickAction){
+        if (disableAdResumeByClickAction) {
             Log.d(TAG, "onResume:ad resume disable ad by action");
             disableAdResumeByClickAction = false;
             return;
@@ -656,7 +654,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             return;
         }
 
-        Log.d(TAG, "onStart: show resume ads :"+ currentActivity.getClass().getName());
+        Log.d(TAG, "onStart: show resume ads :" + currentActivity.getClass().getName());
         showAdIfAvailable(false);
     }
 
@@ -665,6 +663,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         Log.d(TAG, "onStop: app stop");
 
     }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     public void onPause() {
         Log.d(TAG, "onPause");
