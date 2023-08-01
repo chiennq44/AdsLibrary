@@ -31,6 +31,11 @@ public class AppFlyer {
         initAppFlyerDebug(context, devKey, false);
     }
 
+    public void initAppFlyer(Application context, String devKey, boolean enableTrackingAppFlyerRevenue, boolean enableDebug) {
+        this.enableTrackingAppFlyerRevenue = enableTrackingAppFlyerRevenue;
+        initAppFlyerDebug(context, devKey, enableDebug);
+    }
+
     public void initAppFlyerDebug(Application context, String devKey, boolean enableDebugLog) {
         AppsFlyerLib.getInstance().init(devKey, null, context);
         AppsFlyerLib.getInstance().start(context);

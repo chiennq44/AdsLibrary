@@ -12,6 +12,7 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.billingclient.api.QueryPurchasesParams;
 import com.nlbn.ads.callback.BillingListener;
 import com.nlbn.ads.callback.PurchaseListioner;
 import com.nlbn.ads.util.AppUtil;
@@ -58,7 +59,7 @@ public class AppPurchase {
     private BillingClient billingClient;
     private List<SkuDetails> skuListINAPFromStore;
     private List<SkuDetails> skuListSubsFromStore;
-    final private Map<String, SkuDetails>  skuDetailsINAPMap = new HashMap<>();
+    final private Map<String, SkuDetails> skuDetailsINAPMap = new HashMap<>();
     final private Map<String, SkuDetails> skuDetailsSubsMap = new HashMap<>();
     private boolean isAvailable;
     private boolean isListGot;
@@ -351,17 +352,17 @@ public class AppPurchase {
     }
 
 
-    private String logResultBilling(Purchase.PurchasesResult result) {
-        if (result == null || result.getPurchasesList() == null)
-            return "null";
-        StringBuilder log = new StringBuilder();
-        for (Purchase purchase : result.getPurchasesList()) {
-            for (String s : purchase.getSkus()) {
-                log.append(s).append(",");
-            }
-        }
-        return log.toString();
-    }
+//    private String logResultBilling(Purchase.PurchasesResult result) {
+//        if (result == null || result.getPurchasesList() == null)
+//            return "null";
+//        StringBuilder log = new StringBuilder();
+//        for (Purchase purchase : result.getPurchasesList()) {
+//            for (String s : purchase.getSkus()) {
+//                log.append(s).append(",");
+//            }
+//        }
+//        return log.toString();
+//    }
 
     //check  id INAP
 //    public boolean isPurchased(Context context, String productId) {
@@ -558,37 +559,40 @@ public class AppPurchase {
     }
 
     public void consumePurchase(String productId) {
-        Purchase pc = null;
-        Purchase.PurchasesResult resultINAP = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
-        if (resultINAP.getResponseCode() == BillingClient.BillingResponseCode.OK && resultINAP.getPurchasesList() != null) {
-            for (Purchase purchase : resultINAP.getPurchasesList()) {
-                if (purchase.getSkus().contains(productId)) {
-                    pc = purchase;
-                }
-            }
-        }
-        if (pc == null)
-            return;
-        try {
-            ConsumeParams consumeParams =
-                    ConsumeParams.newBuilder()
-                            .setPurchaseToken(pc.getPurchaseToken())
-                            .build();
+        billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP, new PurchasesResponseListener() {
+            @Override
+            public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> list) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                    for (Purchase purchase : list) {
+                        if (purchase.getSkus().contains(productId)) {
+                            try {
+                                ConsumeParams consumeParams =
+                                        ConsumeParams.newBuilder()
+                                                .setPurchaseToken(purchase.getPurchaseToken())
+                                                .build();
 
-            ConsumeResponseListener listener = new ConsumeResponseListener() {
-                @Override
-                public void onConsumeResponse(BillingResult billingResult, String purchaseToken) {
-                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                        Log.e(TAG, "onConsumeResponse: OK");
-                        verifyPurchased(false);
+                                ConsumeResponseListener listener = new ConsumeResponseListener() {
+                                    @Override
+                                    public void onConsumeResponse(BillingResult billingResult, @NonNull String purchaseToken) {
+                                        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                                            Log.e(TAG, "onConsumeResponse: OK");
+                                            verifyPurchased(false);
+                                        }
+                                    }
+                                };
+
+                                billingClient.consumeAsync(consumeParams, listener);
+                                return;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                return;
+                            }
+                        }
                     }
                 }
-            };
+            }
+        });
 
-            billingClient.consumeAsync(consumeParams, listener);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void handlePurchase(Purchase purchase) {
