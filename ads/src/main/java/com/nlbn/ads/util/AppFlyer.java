@@ -55,8 +55,9 @@ public class AppFlyer {
                     "Admod",
                     MediationNetwork.googleadmob,
                     Currency.getInstance(Locale.US),
-                    adValue.getValueMicros() / 1000000.0,
-                    customParams);
+                    (double) adValue.getValueMicros() / 1000000.0,
+                    customParams
+            );
         }
     }
 }
