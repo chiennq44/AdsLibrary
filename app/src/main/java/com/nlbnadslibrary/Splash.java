@@ -46,7 +46,10 @@ public class Splash extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Admob.getInstance().loadSplashInterAds2(Splash.this,"ca-app-pub-3940256099942544/1033173712",2000, interCallback);
+                        List<String> listID = new ArrayList<>();
+                        listID.add("ca-app-pub-3940256099942544/1033173712");
+                        listID.add("ca-app-pub-3940256099942544/1033173712");
+                        Admob.getInstance().loadSplashInterAdsFloor(Splash.this,listID,2000, interCallback);
                     }
                 });
             }
@@ -58,13 +61,13 @@ public class Splash extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        Admob.getInstance().LoadingDialogDismiss();
+        Admob.getInstance().dismissLoadingDialog();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Admob.getInstance().LoadingDialogDismiss();
+        Admob.getInstance().dismissLoadingDialog();
     }
 
     private void initBilling() {

@@ -1,6 +1,10 @@
-plugins {
-    id 'com.android.library'
-}
+
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-parcelize'
+
 
 android {
     compileSdkVersion 33
@@ -55,12 +59,16 @@ dependencies {
     implementation "com.android.billingclient:billing:6.0.1"
     implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
 
-    implementation platform('com.google.firebase:firebase-bom:31.2.0')
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:31.5.0')
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-config:21.4.1'
+
     implementation 'com.google.android.gms:play-services-ads:22.2.0'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     implementation 'com.google.android.gms:play-services-basement:18.2.0'
-    implementation "androidx.core:core-ktx:1.10.1"
     implementation 'com.google.code.gson:gson:2.10.1'
 
 //fb sdk
@@ -72,5 +80,7 @@ dependencies {
     //appsflyer
     implementation 'com.appsflyer:af-android-sdk:6.11.2'
     implementation 'com.appsflyer:adrevenue:6.9.1'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.0"
 
 }

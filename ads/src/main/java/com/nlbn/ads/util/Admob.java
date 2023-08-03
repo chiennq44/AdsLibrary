@@ -18,6 +18,7 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -56,6 +57,7 @@ import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.nlbn.ads.BuildConfig;
 import com.nlbn.ads.R;
+import com.nlbn.ads.banner.BannerPlugin;
 import com.nlbn.ads.billing.AppPurchase;
 import com.nlbn.ads.callback.AdCallback;
 import com.nlbn.ads.callback.InterCallback;
@@ -195,6 +197,10 @@ public class Admob {
         }else{
             loadBanner(mActivity, id, adContainer, containerShimmer, null, false, BANNER_INLINE_LARGE_STYLE);
         }
+    }
+
+    public void loadBannerPlugin(Activity activity, ViewGroup layout , ViewGroup shimmer , BannerPlugin.Config config){
+        new BannerPlugin(activity,layout,shimmer,config);
     }
 
     /**
@@ -711,6 +717,68 @@ public class Admob {
                             });
                 }
             }, timeDelay);
+        }
+    }
+
+    public void loadSplashInterAdsFloor(final Context context, List<String> listID, long timeDelay, final InterCallback adListener){
+        if(!isNetworkConnected()||AppPurchase.getInstance().isPurchased(context)||!isShowAllAds){
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (adListener != null) {
+                        adListener.onAdClosed();
+                        adListener.onNextAction();
+                    }
+                    return;
+                }
+            },3000);
+        }else{
+            mInterstitialSplash = null;
+            if (listID == null) {
+                adListener.onAdClosed();
+                adListener.onNextAction();
+                return;
+            }
+
+            if (listID.size() < 1) {
+                adListener.onAdClosed();
+                adListener.onNextAction();
+
+            }else {
+
+                Log.e("Splash", "load ID :" + listID.get(0));
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        InterstitialAd.load(context,listID.get(0) , getAdRequest(),
+                                new InterstitialAdLoadCallback() {
+                                    @Override
+                                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                                        super.onAdLoaded(interstitialAd);
+                                        mInterstitialSplash = interstitialAd;
+                                        AppOpenManager.getInstance().disableAppResume();
+                                        onShowSplash((Activity) context, adListener);
+                                    }
+
+                                    @Override
+                                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                                        super.onAdFailedToLoad(loadAdError);
+                                        listID.remove(0);
+                                        if (listID.size()==0){
+                                            mInterstitialSplash = null;
+                                            adListener.onAdFailedToLoad(loadAdError);
+                                            adListener.onNextAction();
+                                        }else {
+                                            loadSplashInterAdsFloor(context,listID,100,adListener);
+                                        }
+
+                                    }
+
+                                });
+                    }
+                }, timeDelay);
+            }
+
         }
     }
 
