@@ -3,6 +3,7 @@ package com.nlbn.ads.banner
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
@@ -15,6 +16,9 @@ import androidx.core.view.updateLayoutParams
 import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.*
 import com.nlbn.ads.banner.BannerPlugin.Companion.log
+import com.nlbn.ads.util.AdType
+import com.nlbn.ads.util.Admob
+import com.nlbn.ads.util.FirebaseUtil
 
 
 @SuppressLint("ViewConstructor")
@@ -117,6 +121,13 @@ internal class BannerAdView(
             override fun onAdLoaded() {
                 adView.adListener = object : AdListener() {}
                 onDone()
+                adView.onPaidEventListener = OnPaidEventListener { adValue: AdValue ->
+                    FirebaseUtil.logPaidAdImpression(
+                        context,
+                        adValue,
+                        adView.adUnitId, AdType.BANNER
+                    )
+                }
             }
 
             override fun onAdFailedToLoad(p0: LoadAdError) {
