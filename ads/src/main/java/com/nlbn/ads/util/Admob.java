@@ -758,6 +758,14 @@ public class Admob {
                                         mInterstitialSplash = interstitialAd;
                                         AppOpenManager.getInstance().disableAppResume();
                                         onShowSplash((Activity) context, adListener);
+                                        //tracking adjust
+                                        interstitialAd.setOnPaidEventListener(adValue -> {
+                                            Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
+                                            FirebaseUtil.logPaidAdImpression(context,
+                                                    adValue,
+                                                    interstitialAd.getAdUnitId(), AdType.INTERSTITIAL);
+                                            adListener.onEarnRevenue( (double) adValue.getValueMicros());
+                                        });
                                     }
 
                                     @Override

@@ -45,7 +45,7 @@ public class AppFlyer {
         AppsFlyerLib.getInstance().setDebugLog(enableDebugLog);
     }
 
-    public void pushTrackEventAdmod(AdValue adValue, String adId, String adType) {
+    public void pushTrackEventAdmob(AdValue adValue, String adId, String adType) {
         Log.e(TAG, "Log tracking event AppFlyer: enableAppFlyer:" + this.enableTrackingAppFlyerRevenue + " --- AdType: " + adType + " --- value: " + adValue.getValueMicros() / 1000000);
         if (enableTrackingAppFlyerRevenue) {
             Map<String, String> customParams = new HashMap<>();
