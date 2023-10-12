@@ -1589,6 +1589,74 @@ public class Admob {
         }
     }
 
+    public void loadNativeAds(Context context, String id, int numsOfAds, final NativeCallback callback) {
+        if (AppPurchase.getInstance().isPurchased(context) || !isShowAllAds || !isNetworkConnected()) {
+            callback.onAdFailedToLoad();
+            return;
+        }
+        if (isShowNative) {
+            if (isNetworkConnected()) {
+                VideoOptions videoOptions = new VideoOptions.Builder()
+                        .setStartMuted(true)
+                        .build();
+
+                NativeAdOptions adOptions = new NativeAdOptions.Builder()
+                        .setVideoOptions(videoOptions)
+                        .build();
+                AdLoader adLoader = new AdLoader.Builder(context, id)
+                        .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+
+                            @Override
+                            public void onNativeAdLoaded(@NonNull NativeAd nativeAd) {
+                                if (context instanceof Activity) {
+                                    if (((Activity) context).isFinishing() || ((Activity) context).isFinishing() || ((Activity) context).isChangingConfigurations()) {
+                                        nativeAd.destroy();
+                                        return;
+                                    }
+                                }
+                                callback.onNativeAdLoaded(nativeAd);
+                                nativeAd.setOnPaidEventListener(adValue -> {
+                                    Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
+                                    FirebaseUtil.logPaidAdImpression(context,
+                                            adValue,
+                                            id,
+                                            AdType.NATIVE);
+                                    callback.onEarnRevenue((double) adValue.getValueMicros());
+                                });
+                            }
+                        })
+                        .withAdListener(new AdListener() {
+                            @Override
+                            public void onAdFailedToLoad(LoadAdError error) {
+                                Log.e(TAG, "NativeAd onAdFailedToLoad: " + error.getMessage());
+                                callback.onAdFailedToLoad();
+                            }
+
+                            @Override
+                            public void onAdClicked() {
+                                super.onAdClicked();
+                                if (disableAdResumeWhenClickAds)
+                                    AppOpenManager.getInstance().disableAdResumeByClickAction();
+                                FirebaseUtil.logClickAdsEvent(context, id);
+                                if (timeLimitAds > 1000) {
+                                    setTimeLimitNative();
+                                    if (callback != null) {
+                                        callback.onAdFailedToLoad();
+                                    }
+                                }
+                            }
+                        })
+                        .withNativeAdOptions(adOptions)
+                        .build();
+                adLoader.loadAds(getAdRequest(), numsOfAds);
+            } else {
+                callback.onAdFailedToLoad();
+            }
+        } else {
+            callback.onAdFailedToLoad();
+        }
+    }
+
     /* =============================  Native Ads Floor  ==========================================*/
     public void loadNativeAdFloor(Context context, List<String> listID, final NativeCallback callback) {
         if (listID == null || listID.size() == 0) {
