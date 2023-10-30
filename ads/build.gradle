@@ -49,34 +49,34 @@ dependencies {
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
-    implementation 'androidx.lifecycle:lifecycle-process:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-process:2.6.2'
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
 
     def multidex_version = "2.0.1"
     implementation "androidx.multidex:multidex:$multidex_version"
     implementation "com.android.billingclient:billing:6.0.1"
     implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
-
+    implementation 'com.google.android.ump:user-messaging-platform:2.1.0'
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:31.5.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-messaging'
-    implementation 'com.google.firebase:firebase-config:21.4.1'
+    implementation 'com.google.firebase:firebase-config'
 
-    implementation 'com.google.android.gms:play-services-ads:22.3.0'
+    implementation 'com.google.android.gms:play-services-ads:22.4.0'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     implementation 'com.google.android.gms:play-services-basement:18.2.0'
     implementation 'com.google.code.gson:gson:2.10.1'
 
 //fb sdk
-    implementation 'com.facebook.android:facebook-android-sdk:16.1.2'
+    implementation 'com.facebook.android:facebook-android-sdk:16.2.0'
 
 
-    implementation 'com.airbnb.android:lottie:6.0.0'
+    implementation 'com.airbnb.android:lottie:6.1.0'
 
     //appsflyer
-    implementation 'com.appsflyer:af-android-sdk:6.11.2'
+    implementation 'com.appsflyer:af-android-sdk:6.12.2'
     implementation 'com.appsflyer:adrevenue:6.9.1'
     //Adjust
     implementation 'com.adjust.sdk:adjust-android:4.33.5'

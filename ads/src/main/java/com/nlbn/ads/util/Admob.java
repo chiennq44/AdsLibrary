@@ -116,7 +116,7 @@ public class Admob {
         return INSTANCE;
     }
 
-    public void initAdmod(Context context, List<String> testDeviceList) {
+    public void initAdmob(Context context, List<String> testDeviceList) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             String processName = Application.getProcessName();
             String packageName = context.getPackageName();
@@ -131,7 +131,7 @@ public class Admob {
         this.context = context;
     }
 
-    public void initAdmod(Context context) {
+    public void initAdmob(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             String processName = Application.getProcessName();
             String packageName = context.getPackageName();
