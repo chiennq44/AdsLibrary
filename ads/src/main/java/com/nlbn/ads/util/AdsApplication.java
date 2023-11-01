@@ -23,13 +23,18 @@ public abstract class AdsApplication extends Application {
 
     public abstract boolean enableAdsResume();
 
-    public abstract boolean enableAdjustTracking();
+    protected boolean enableAdjustTracking() {
+        return false;
+    }
 
     public abstract List<String> getListTestDeviceId();
 
     public abstract String getResumeAdId();
 
-    public abstract String getAdjustToken();
+    protected String getAdjustToken() {
+        return null;
+    }
+
 
     public abstract Boolean buildDebug();
 }

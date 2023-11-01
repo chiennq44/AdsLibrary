@@ -31,8 +31,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
-import com.appsflyer.AppsFlyerLib;
-import com.appsflyer.adrevenue.AppsFlyerAdRevenue;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdError;
@@ -47,10 +45,10 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.VideoOptions;
-import com.google.android.gms.ads.formats.NativeAdOptions;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdOptions;
 import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
@@ -1040,13 +1038,7 @@ public class Admob {
         });
         Log.e(TAG, "onShowSplash: dialog");
 
-        if (mInterstitialSplash == null) {
-            if (dialog != null && dialog.isShowing())
-                dialog.dismiss();
-            adListener.onAdClosed();
-            adListener.onNextAction();
-            return;
-        }
+
         if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
             try {
                 if (dialog != null && dialog.isShowing())
@@ -1536,26 +1528,22 @@ public class Admob {
                         .setVideoOptions(videoOptions)
                         .build();
                 AdLoader adLoader = new AdLoader.Builder(context, id)
-                        .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
-
-                            @Override
-                            public void onNativeAdLoaded(@NonNull NativeAd nativeAd) {
-                                if (context instanceof Activity) {
-                                    if (((Activity) context).isFinishing() || ((Activity) context).isFinishing() || ((Activity) context).isChangingConfigurations()) {
-                                        nativeAd.destroy();
-                                        return;
-                                    }
+                        .forNativeAd(nativeAd -> {
+                            if (context instanceof Activity) {
+                                if (((Activity) context).isFinishing() || ((Activity) context).isFinishing() || ((Activity) context).isChangingConfigurations()) {
+                                    nativeAd.destroy();
+                                    return;
                                 }
-                                callback.onNativeAdLoaded(nativeAd);
-                                nativeAd.setOnPaidEventListener(adValue -> {
-                                    Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
-                                    FirebaseUtil.logPaidAdImpression(context,
-                                            adValue,
-                                            id,
-                                            AdType.NATIVE);
-                                    callback.onEarnRevenue((double) adValue.getValueMicros());
-                                });
                             }
+                            callback.onNativeAdLoaded(nativeAd);
+                            nativeAd.setOnPaidEventListener(adValue -> {
+                                Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
+                                FirebaseUtil.logPaidAdImpression(context,
+                                        adValue,
+                                        id,
+                                        AdType.NATIVE);
+                                callback.onEarnRevenue((double) adValue.getValueMicros());
+                            });
                         })
                         .withAdListener(new AdListener() {
                             @Override
