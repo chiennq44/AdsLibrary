@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -44,9 +45,11 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.RequestConfiguration;
+import com.google.android.gms.ads.VideoController;
 import com.google.android.gms.ads.VideoOptions;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.gms.ads.nativead.MediaView;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdOptions;
 import com.google.android.gms.ads.nativead.NativeAdView;
@@ -421,8 +424,8 @@ public class Admob {
                             Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
 
                             FirebaseUtil.logPaidAdImpression(context,
-                                    adValue,
-                                    adView.getAdUnitId(), AdType.BANNER);
+                                adValue,
+                                adView.getAdUnitId(), AdType.BANNER);
                         });
                     }
                 }
@@ -485,8 +488,8 @@ public class Admob {
                         Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
 
                         FirebaseUtil.logPaidAdImpression(context,
-                                adValue,
-                                adView.getAdUnitId(), AdType.BANNER);
+                            adValue,
+                            adView.getAdUnitId(), AdType.BANNER);
                     });
 
                 }
@@ -643,8 +646,8 @@ public class Admob {
                             interstitialAd.setOnPaidEventListener(adValue -> {
                                 Log.d(TAG, "OnPaidEvent loadInterstitialAds:" + adValue.getValueMicros());
                                 FirebaseUtil.logPaidAdImpression(context,
-                                        adValue,
-                                        interstitialAd.getAdUnitId(), AdType.BANNER);
+                                    adValue,
+                                    interstitialAd.getAdUnitId(), AdType.BANNER);
                             });
                         }
                     }
@@ -696,25 +699,24 @@ public class Admob {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    InterstitialAd.load(context, id, getAdRequest(),
-                            new InterstitialAdLoadCallback() {
-                                @Override
-                                public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                                    super.onAdLoaded(interstitialAd);
-                                    mInterstitialSplash = interstitialAd;
-                                    AppOpenManager.getInstance().disableAppResume();
-                                    onShowSplash((Activity) context, adListener);
-                                }
+                    InterstitialAd.load(context, id, getAdRequest(), new InterstitialAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                            super.onAdLoaded(interstitialAd);
+                            mInterstitialSplash = interstitialAd;
+                            AppOpenManager.getInstance().disableAppResume();
+                            onShowSplash((Activity) context, adListener);
+                        }
 
-                                @Override
-                                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                                    super.onAdFailedToLoad(loadAdError);
-                                    mInterstitialSplash = null;
-                                    adListener.onAdFailedToLoad(loadAdError);
-                                    adListener.onNextAction();
-                                }
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            super.onAdFailedToLoad(loadAdError);
+                            mInterstitialSplash = null;
+                            adListener.onAdFailedToLoad(loadAdError);
+                            adListener.onNextAction();
+                        }
 
-                            });
+                    });
                 }
             }, timeDelay);
         }
@@ -751,38 +753,38 @@ public class Admob {
                     @Override
                     public void run() {
                         InterstitialAd.load(context, listID.get(0), getAdRequest(),
-                                new InterstitialAdLoadCallback() {
-                                    @Override
-                                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                                        super.onAdLoaded(interstitialAd);
-                                        mInterstitialSplash = interstitialAd;
-                                        AppOpenManager.getInstance().disableAppResume();
-                                        onShowSplash((Activity) context, adListener);
-                                        //tracking adjust
-                                        interstitialAd.setOnPaidEventListener(adValue -> {
-                                            Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
-                                            FirebaseUtil.logPaidAdImpression(context,
-                                                    adValue,
-                                                    interstitialAd.getAdUnitId(), AdType.INTERSTITIAL);
-                                            adListener.onEarnRevenue((double) adValue.getValueMicros());
-                                        });
+                            new InterstitialAdLoadCallback() {
+                                @Override
+                                public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                                    super.onAdLoaded(interstitialAd);
+                                    mInterstitialSplash = interstitialAd;
+                                    AppOpenManager.getInstance().disableAppResume();
+                                    onShowSplash((Activity) context, adListener);
+                                    //tracking adjust
+                                    interstitialAd.setOnPaidEventListener(adValue -> {
+                                        Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
+                                        FirebaseUtil.logPaidAdImpression(context,
+                                            adValue,
+                                            interstitialAd.getAdUnitId(), AdType.INTERSTITIAL);
+                                        adListener.onEarnRevenue((double) adValue.getValueMicros());
+                                    });
+                                }
+
+                                @Override
+                                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                                    super.onAdFailedToLoad(loadAdError);
+                                    listID.remove(0);
+                                    if (listID.size() == 0) {
+                                        mInterstitialSplash = null;
+                                        adListener.onAdFailedToLoad(loadAdError);
+                                        adListener.onNextAction();
+                                    } else {
+                                        loadSplashInterAdsFloor(context, listID, 100, adListener);
                                     }
 
-                                    @Override
-                                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                                        super.onAdFailedToLoad(loadAdError);
-                                        listID.remove(0);
-                                        if (listID.size() == 0) {
-                                            mInterstitialSplash = null;
-                                            adListener.onAdFailedToLoad(loadAdError);
-                                            adListener.onNextAction();
-                                        } else {
-                                            loadSplashInterAdsFloor(context, listID, 100, adListener);
-                                        }
+                                }
 
-                                    }
-
-                                });
+                            });
                     }
                 }, timeDelay);
             }
@@ -806,8 +808,8 @@ public class Admob {
                 mInterstitialSplash.setOnPaidEventListener(adValue -> {
                     Log.d(TAG, "OnPaidEvent splash:" + adValue.getValueMicros());
                     FirebaseUtil.logPaidAdImpression(context,
-                            adValue,
-                            mInterstitialSplash.getAdUnitId(), AdType.INTERSTITIAL);
+                        adValue,
+                        mInterstitialSplash.getAdUnitId(), AdType.INTERSTITIAL);
                     adListener.onEarnRevenue((double) adValue.getValueMicros());
                 });
 
@@ -959,8 +961,8 @@ public class Admob {
         mInterstitialSplash.setOnPaidEventListener(adValue -> {
             Log.d(TAG, "OnPaidEvent splash:" + adValue.getValueMicros());
             FirebaseUtil.logPaidAdImpression(context,
-                    adValue,
-                    mInterstitialSplash.getAdUnitId(), AdType.INTERSTITIAL);
+                adValue,
+                mInterstitialSplash.getAdUnitId(), AdType.INTERSTITIAL);
             adListener.onEarnRevenue((double) adValue.getValueMicros());
         });
 
@@ -1126,33 +1128,33 @@ public class Admob {
             isTimeout = false;
             interstitialAd = null;
             InterstitialAd.load(context, id, getAdRequest(),
-                    new InterstitialAdLoadCallback() {
-                        @Override
-                        public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                            if (adCallback != null) {
-                                adCallback.onInterstitialLoad(interstitialAd);
-                            }
-
-                            //tracking adjust
-                            interstitialAd.setOnPaidEventListener(adValue -> {
-                                Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
-                                FirebaseUtil.logPaidAdImpression(context,
-                                        adValue,
-                                        interstitialAd.getAdUnitId(), AdType.INTERSTITIAL);
-                                adCallback.onEarnRevenue((double) adValue.getValueMicros());
-                            });
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        if (adCallback != null) {
+                            adCallback.onInterstitialLoad(interstitialAd);
                         }
 
-                        @Override
-                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                            // Handle the error
-                            Log.i(TAG, loadAdError.getMessage());
-                            if (adCallback != null)
-                                adCallback.onAdFailedToLoad(loadAdError);
-                            adCallback.onNextAction();
-                        }
+                        //tracking adjust
+                        interstitialAd.setOnPaidEventListener(adValue -> {
+                            Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
+                            FirebaseUtil.logPaidAdImpression(context,
+                                adValue,
+                                interstitialAd.getAdUnitId(), AdType.INTERSTITIAL);
+                            adCallback.onEarnRevenue((double) adValue.getValueMicros());
+                        });
+                    }
 
-                    });
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.i(TAG, loadAdError.getMessage());
+                        if (adCallback != null)
+                            adCallback.onAdFailedToLoad(loadAdError);
+                        adCallback.onNextAction();
+                    }
+
+                });
         }
     }
 
@@ -1492,9 +1494,9 @@ public class Admob {
 
                     Log.d(TAG, "OnPaidEvent Reward:" + adValue.getValueMicros());
                     FirebaseUtil.logPaidAdImpression(context,
-                            adValue,
-                            rewardedAd.getAdUnitId(),
-                            AdType.REWARDED);
+                        adValue,
+                        rewardedAd.getAdUnitId(),
+                        AdType.REWARDED);
                 });
             }
 
@@ -1521,53 +1523,47 @@ public class Admob {
         if (isShowNative) {
             if (isNetworkConnected()) {
                 VideoOptions videoOptions = new VideoOptions.Builder()
-                        .setStartMuted(true)
-                        .build();
+                    .setStartMuted(true)
+                    .build();
 
                 NativeAdOptions adOptions = new NativeAdOptions.Builder()
-                        .setVideoOptions(videoOptions)
-                        .build();
+                    .setVideoOptions(videoOptions)
+                    .build();
                 AdLoader adLoader = new AdLoader.Builder(context, id)
-                        .forNativeAd(nativeAd -> {
-                            if (context instanceof Activity) {
-                                if (((Activity) context).isFinishing() || ((Activity) context).isFinishing() || ((Activity) context).isChangingConfigurations()) {
-                                    nativeAd.destroy();
-                                    return;
-                                }
-                            }
-                            callback.onNativeAdLoaded(nativeAd);
-                            nativeAd.setOnPaidEventListener(adValue -> {
-                                Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
-                                FirebaseUtil.logPaidAdImpression(context,
-                                        adValue,
-                                        id,
-                                        AdType.NATIVE);
-                                callback.onEarnRevenue((double) adValue.getValueMicros());
-                            });
-                        })
-                        .withAdListener(new AdListener() {
-                            @Override
-                            public void onAdFailedToLoad(LoadAdError error) {
-                                Log.e(TAG, "NativeAd onAdFailedToLoad: " + error.getMessage());
-                                callback.onAdFailedToLoad();
-                            }
+                    .forNativeAd(nativeAd -> {
+                        callback.onNativeAdLoaded(nativeAd);
+                        nativeAd.setOnPaidEventListener(adValue -> {
+                            Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
+                            FirebaseUtil.logPaidAdImpression(context,
+                                adValue,
+                                id,
+                                AdType.NATIVE);
+                            callback.onEarnRevenue((double) adValue.getValueMicros());
+                        });
+                    })
+                    .withAdListener(new AdListener() {
+                        @Override
+                        public void onAdFailedToLoad(LoadAdError error) {
+                            Log.e(TAG, "NativeAd onAdFailedToLoad: " + error.getMessage());
+                            callback.onAdFailedToLoad();
+                        }
 
-                            @Override
-                            public void onAdClicked() {
-                                super.onAdClicked();
-                                if (disableAdResumeWhenClickAds)
-                                    AppOpenManager.getInstance().disableAdResumeByClickAction();
-                                FirebaseUtil.logClickAdsEvent(context, id);
-                                if (timeLimitAds > 1000) {
-                                    setTimeLimitNative();
-                                    if (callback != null) {
-                                        callback.onAdFailedToLoad();
-                                    }
+                        @Override
+                        public void onAdClicked() {
+                            super.onAdClicked();
+                            if (disableAdResumeWhenClickAds)
+                                AppOpenManager.getInstance().disableAdResumeByClickAction();
+                            FirebaseUtil.logClickAdsEvent(context, id);
+                            if (timeLimitAds > 1000) {
+                                setTimeLimitNative();
+                                if (callback != null) {
+                                    callback.onAdFailedToLoad();
                                 }
                             }
-                        })
-                        .withNativeAdOptions(adOptions)
-                        .build();
+                        }
+                    })
+                    .withNativeAdOptions(adOptions)
+                    .build();
                 adLoader.loadAd(getAdRequest());
             } else {
                 callback.onAdFailedToLoad();
@@ -1585,57 +1581,57 @@ public class Admob {
         if (isShowNative) {
             if (isNetworkConnected()) {
                 VideoOptions videoOptions = new VideoOptions.Builder()
-                        .setStartMuted(true)
-                        .build();
+                    .setStartMuted(true)
+                    .build();
 
                 NativeAdOptions adOptions = new NativeAdOptions.Builder()
-                        .setVideoOptions(videoOptions)
-                        .build();
+                    .setVideoOptions(videoOptions)
+                    .build();
                 AdLoader adLoader = new AdLoader.Builder(context, id)
-                        .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                    .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
 
-                            @Override
-                            public void onNativeAdLoaded(@NonNull NativeAd nativeAd) {
-                                if (context instanceof Activity) {
-                                    if (((Activity) context).isFinishing() || ((Activity) context).isFinishing() || ((Activity) context).isChangingConfigurations()) {
-                                        nativeAd.destroy();
-                                        return;
-                                    }
-                                }
-                                callback.onNativeAdLoaded(nativeAd);
-                                nativeAd.setOnPaidEventListener(adValue -> {
-                                    Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
-                                    FirebaseUtil.logPaidAdImpression(context,
-                                            adValue,
-                                            id,
-                                            AdType.NATIVE);
-                                    callback.onEarnRevenue((double) adValue.getValueMicros());
-                                });
-                            }
-                        })
-                        .withAdListener(new AdListener() {
-                            @Override
-                            public void onAdFailedToLoad(LoadAdError error) {
-                                Log.e(TAG, "NativeAd onAdFailedToLoad: " + error.getMessage());
-                                callback.onAdFailedToLoad();
-                            }
-
-                            @Override
-                            public void onAdClicked() {
-                                super.onAdClicked();
-                                if (disableAdResumeWhenClickAds)
-                                    AppOpenManager.getInstance().disableAdResumeByClickAction();
-                                FirebaseUtil.logClickAdsEvent(context, id);
-                                if (timeLimitAds > 1000) {
-                                    setTimeLimitNative();
-                                    if (callback != null) {
-                                        callback.onAdFailedToLoad();
-                                    }
+                        @Override
+                        public void onNativeAdLoaded(@NonNull NativeAd nativeAd) {
+                            if (context instanceof Activity) {
+                                if (((Activity) context).isFinishing() || ((Activity) context).isFinishing() || ((Activity) context).isChangingConfigurations()) {
+                                    nativeAd.destroy();
+                                    return;
                                 }
                             }
-                        })
-                        .withNativeAdOptions(adOptions)
-                        .build();
+                            callback.onNativeAdLoaded(nativeAd);
+                            nativeAd.setOnPaidEventListener(adValue -> {
+                                Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
+                                FirebaseUtil.logPaidAdImpression(context,
+                                    adValue,
+                                    id,
+                                    AdType.NATIVE);
+                                callback.onEarnRevenue((double) adValue.getValueMicros());
+                            });
+                        }
+                    })
+                    .withAdListener(new AdListener() {
+                        @Override
+                        public void onAdFailedToLoad(LoadAdError error) {
+                            Log.e(TAG, "NativeAd onAdFailedToLoad: " + error.getMessage());
+                            callback.onAdFailedToLoad();
+                        }
+
+                        @Override
+                        public void onAdClicked() {
+                            super.onAdClicked();
+                            if (disableAdResumeWhenClickAds)
+                                AppOpenManager.getInstance().disableAdResumeByClickAction();
+                            FirebaseUtil.logClickAdsEvent(context, id);
+                            if (timeLimitAds > 1000) {
+                                setTimeLimitNative();
+                                if (callback != null) {
+                                    callback.onAdFailedToLoad();
+                                }
+                            }
+                        }
+                    })
+                    .withNativeAdOptions(adOptions)
+                    .build();
                 adLoader.loadAds(getAdRequest(), numsOfAds);
             } else {
                 callback.onAdFailedToLoad();
@@ -1668,9 +1664,9 @@ public class Admob {
                     nativeAd.setOnPaidEventListener(adValue -> {
                         Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                         FirebaseUtil.logPaidAdImpression(context,
-                                adValue,
-                                listID.get(0),
-                                AdType.NATIVE);
+                            adValue,
+                            listID.get(0),
+                            AdType.NATIVE);
                         callback.onEarnRevenue((double) adValue.getValueMicros());
                     });
                 }
@@ -1696,26 +1692,6 @@ public class Admob {
 
     public void pushAdsToViewCustom(NativeAd nativeAd, NativeAdView adView) {
         adView.setMediaView(adView.findViewById(R.id.ad_media));
-        if (adView.getMediaView() != null) {
-            adView.getMediaView().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (context != null && BuildConfig.DEBUG) {
-                        float sizeMin = TypedValue.applyDimension(
-                                TypedValue.COMPLEX_UNIT_DIP,
-                                120,
-                                context.getResources().getDisplayMetrics()
-                        );
-                        Log.e(TAG, "Native sizeMin: " + sizeMin);
-                        Log.e(TAG, "Native w/h media : " + adView.getMediaView().getWidth() + "/" + adView.getMediaView().getHeight());
-                        if (adView.getMediaView().getWidth() < sizeMin || adView.getMediaView().getHeight() < sizeMin) {
-                            Toast.makeText(context, "Size media native not valid", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-            }, 1000);
-
-        }
         // Set other ad assets.
         adView.setHeadlineView(adView.findViewById(R.id.ad_headline));
         adView.setBodyView(adView.findViewById(R.id.ad_body));
@@ -1723,99 +1699,47 @@ public class Admob {
         adView.setIconView(adView.findViewById(R.id.ad_app_icon));
         adView.setAdvertiserView(adView.findViewById(R.id.ad_advertiser));
 
-        // The headline is guaranteed to be in every UnifiedNativeAd.
-        try {
+        if (adView.getHeadlineView() != null) {
             ((TextView) adView.getHeadlineView()).setText(nativeAd.getHeadline());
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
-        // These assets aren't guaranteed to be in every UnifiedNativeAd, so it's important to
-        // check before trying to display them.
-        try {
+        if (adView.getBodyView() != null) {
             if (nativeAd.getBody() == null) {
                 adView.getBodyView().setVisibility(View.INVISIBLE);
             } else {
                 adView.getBodyView().setVisibility(View.VISIBLE);
                 ((TextView) adView.getBodyView()).setText(nativeAd.getBody());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
-        try {
+        if (adView.getCallToActionView() != null) {
             if (nativeAd.getCallToAction() == null) {
-                Objects.requireNonNull(adView.getCallToActionView()).setVisibility(View.INVISIBLE);
+                adView.getCallToActionView().setVisibility(View.INVISIBLE);
             } else {
-                Objects.requireNonNull(adView.getCallToActionView()).setVisibility(View.VISIBLE);
+                adView.getCallToActionView().setVisibility(View.VISIBLE);
                 ((TextView) adView.getCallToActionView()).setText(nativeAd.getCallToAction());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
-        try {
+        if (adView.getIconView() != null) {
             if (nativeAd.getIcon() == null) {
-                Objects.requireNonNull(adView.getIconView()).setVisibility(View.GONE);
+                adView.getIconView().setVisibility(View.GONE);
             } else {
-                ((ImageView) adView.getIconView()).setImageDrawable(
-                        nativeAd.getIcon().getDrawable());
+                if (nativeAd.getIcon().getDrawable() != null)
+                    ((ImageView) adView.getIconView()).setImageDrawable(nativeAd.getIcon().getDrawable());
                 adView.getIconView().setVisibility(View.VISIBLE);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
-        try {
-            if (nativeAd.getPrice() == null) {
-                Objects.requireNonNull(adView.getPriceView()).setVisibility(View.INVISIBLE);
-            } else {
-                Objects.requireNonNull(adView.getPriceView()).setVisibility(View.VISIBLE);
-                ((TextView) adView.getPriceView()).setText(nativeAd.getPrice());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            if (nativeAd.getStore() == null) {
-                Objects.requireNonNull(adView.getStoreView()).setVisibility(View.INVISIBLE);
-            } else {
-                Objects.requireNonNull(adView.getStoreView()).setVisibility(View.VISIBLE);
-                ((TextView) adView.getStoreView()).setText(nativeAd.getStore());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            if (nativeAd.getStarRating() == null) {
-                Objects.requireNonNull(adView.getStarRatingView()).setVisibility(View.INVISIBLE);
-            } else {
-                ((RatingBar) Objects.requireNonNull(adView.getStarRatingView()))
-                        .setRating(nativeAd.getStarRating().floatValue());
-                adView.getStarRatingView().setVisibility(View.VISIBLE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
+        if (adView.getAdvertiserView() != null) {
             if (nativeAd.getAdvertiser() == null) {
                 adView.getAdvertiserView().setVisibility(View.INVISIBLE);
             } else {
                 ((TextView) adView.getAdvertiserView()).setText(nativeAd.getAdvertiser());
                 adView.getAdvertiserView().setVisibility(View.VISIBLE);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
-        // This method tells the Google Mobile Ads SDK that you have finished populating your
-        // native ad view with this native ad. The SDK will populate the adView's MediaView
-        // with the media content from this native ad.
         adView.setNativeAd(nativeAd);
-
     }
 
 
@@ -1836,57 +1760,57 @@ public class Admob {
         containerShimmer.startShimmer();
 
         VideoOptions videoOptions = new VideoOptions.Builder()
-                .setStartMuted(true)
-                .build();
+            .setStartMuted(true)
+            .build();
 
         NativeAdOptions adOptions = new NativeAdOptions.Builder()
-                .setVideoOptions(videoOptions)
-                .build();
+            .setVideoOptions(videoOptions)
+            .build();
 
 
         AdLoader adLoader = new AdLoader.Builder(context, id)
-                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
-                    @Override
-                    public void onNativeAdLoaded(@NonNull NativeAd nativeAd) {
-                        containerShimmer.stopShimmer();
-                        containerShimmer.setVisibility(View.GONE);
-                        frameLayout.setVisibility(View.VISIBLE);
-                        @SuppressLint("InflateParams") NativeAdView adView = (NativeAdView) LayoutInflater.from(context)
-                                .inflate(layout, null);
-                        pushAdsToViewCustom(nativeAd, adView);
-                        frameLayout.removeAllViews();
-                        frameLayout.addView(adView);
-                        nativeAd.setOnPaidEventListener(adValue -> {
-                            Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
-                            FirebaseUtil.logPaidAdImpression(context,
-                                    adValue,
-                                    id,
-                                    AdType.NATIVE);
-                        });
-                    }
+            .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+                @Override
+                public void onNativeAdLoaded(@NonNull NativeAd nativeAd) {
+                    containerShimmer.stopShimmer();
+                    containerShimmer.setVisibility(View.GONE);
+                    frameLayout.setVisibility(View.VISIBLE);
+                    @SuppressLint("InflateParams") NativeAdView adView = (NativeAdView) LayoutInflater.from(context)
+                        .inflate(layout, null);
+                    pushAdsToViewCustom(nativeAd, adView);
+                    frameLayout.removeAllViews();
+                    frameLayout.addView(adView);
+                    nativeAd.setOnPaidEventListener(adValue -> {
+                        Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
+                        FirebaseUtil.logPaidAdImpression(context,
+                            adValue,
+                            id,
+                            AdType.NATIVE);
+                    });
+                }
 
 
-                })
-                .withAdListener(new AdListener() {
-                    @Override
-                    public void onAdFailedToLoad(LoadAdError error) {
-                        Log.e(TAG, "onAdFailedToLoad: " + error.getMessage());
-                        containerShimmer.stopShimmer();
-                        containerShimmer.setVisibility(View.GONE);
-                        frameLayout.setVisibility(View.GONE);
-                    }
+            })
+            .withAdListener(new AdListener() {
+                @Override
+                public void onAdFailedToLoad(LoadAdError error) {
+                    Log.e(TAG, "onAdFailedToLoad: " + error.getMessage());
+                    containerShimmer.stopShimmer();
+                    containerShimmer.setVisibility(View.GONE);
+                    frameLayout.setVisibility(View.GONE);
+                }
 
-                    @Override
-                    public void onAdClicked() {
-                        super.onAdClicked();
-                        if (disableAdResumeWhenClickAds)
-                            AppOpenManager.getInstance().disableAdResumeByClickAction();
-                        FirebaseUtil.logClickAdsEvent(context, id);
-                    }
+                @Override
+                public void onAdClicked() {
+                    super.onAdClicked();
+                    if (disableAdResumeWhenClickAds)
+                        AppOpenManager.getInstance().disableAdResumeByClickAction();
+                    FirebaseUtil.logClickAdsEvent(context, id);
+                }
 
-                })
-                .withNativeAdOptions(adOptions)
-                .build();
+            })
+            .withNativeAdOptions(adOptions)
+            .build();
 
         adLoader.loadAd(getAdRequest());
     }
@@ -1912,7 +1836,7 @@ public class Admob {
     @SuppressLint("HardwareIds")
     public String getDeviceId(Activity activity) {
         String android_id = Settings.Secure.getString(activity.getContentResolver(),
-                Settings.Secure.ANDROID_ID);
+            Settings.Secure.ANDROID_ID);
         return md5(android_id).toUpperCase();
     }
 
@@ -1920,7 +1844,7 @@ public class Admob {
         try {
             // Create MD5 Hash
             MessageDigest digest = java.security.MessageDigest
-                    .getInstance("MD5");
+                .getInstance("MD5");
             digest.update(s.getBytes());
             byte messageDigest[] = digest.digest();
 
