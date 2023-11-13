@@ -1700,7 +1700,12 @@ public class Admob {
         adView.setAdvertiserView(adView.findViewById(R.id.ad_advertiser));
 
         if (adView.getHeadlineView() != null) {
-            ((TextView) adView.getHeadlineView()).setText(nativeAd.getHeadline());
+            if (nativeAd.getHeadline() != null) {
+                adView.getHeadlineView().setVisibility(View.VISIBLE);
+                ((TextView) adView.getHeadlineView()).setText(nativeAd.getHeadline());
+            } else {
+                adView.getHeadlineView().setVisibility(View.INVISIBLE);
+            }
         }
         if (adView.getBodyView() != null) {
             if (nativeAd.getBody() == null) {
