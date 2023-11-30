@@ -3,20 +3,14 @@ package com.nlbn.ads.util;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Dialog;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
@@ -26,7 +20,6 @@ import com.nlbn.ads.billing.AppPurchase;
 import com.nlbn.ads.callback.AdCallback;
 import com.nlbn.ads.dialog.LoadingAdsDialog;
 import com.nlbn.ads.dialog.ResumeLoadingDialog;
-import com.google.android.gms.ads.AdActivity;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -34,7 +27,6 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.appopen.AppOpenAd;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -305,17 +297,17 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     public void onActivityResumed(Activity activity) {
         currentActivity = activity;
         Log.d(TAG, "onActivityResumed: " + currentActivity);
-        if (splashActivity == null) {
-            if (!activity.getClass().getName().equals(AdActivity.class.getName())) {
-                Log.d(TAG, "onActivityResumed 1: with " + activity.getClass().getName());
-                fetchAd(false);
-            }
-        } else {
-            if (!activity.getClass().getName().equals(splashActivity.getName()) && !activity.getClass().getName().equals(AdActivity.class.getName())) {
-                Log.d(TAG, "onActivityResumed 2: with " + activity.getClass().getName());
-                fetchAd(false);
-            }
-        }
+//        if (splashActivity == null) {
+//            if (!activity.getClass().getName().equals(AdActivity.class.getName())) {
+//                Log.d(TAG, "onActivityResumed 1: with " + activity.getClass().getName());
+//                fetchAd(false);
+//            }
+//        } else {
+//            if (!activity.getClass().getName().equals(splashActivity.getName()) && !activity.getClass().getName().equals(AdActivity.class.getName())) {
+//                Log.d(TAG, "onActivityResumed 2: with " + activity.getClass().getName());
+//                fetchAd(false);
+//            }
+//        }
     }
 
     @Override
@@ -543,7 +535,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 //        }
 //    }
 
-    public void LoadAdResume() {
+    public void loadAdResume() {
         try {
             dismissDialogLoading();
             dialog = new ResumeLoadingDialog(currentActivity);
@@ -766,7 +758,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         }
 
         Log.d(TAG, "onStart: show resume ads :" + currentActivity.getClass().getName());
-        LoadAdResume();
+        loadAdResume();
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
