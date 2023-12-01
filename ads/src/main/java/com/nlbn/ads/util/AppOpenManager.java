@@ -444,98 +444,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     }
 
     Dialog dialog = null;
-// resume old
-//    private void showResumeAds() {
-//        if (appResumeAd == null || currentActivity == null) {
-//            return;
-//        }
-//        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-//            try {
-//                dismissDialogLoading();
-//                dialog = new ResumeLoadingDialog(currentActivity);
-//                try {
-//                    dialog.show();
-//                } catch (Exception e) {
-//                    if (fullScreenContentCallback != null && enableScreenContentCallback) {
-//                        fullScreenContentCallback.onAdDismissedFullScreenContent();
-//
-//                    }
-//                    return;
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-////            new Handler().postDelayed(() -> {
-//            if (appResumeAd != null) {
-//                appResumeAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-//                    @Override
-//                    public void onAdDismissedFullScreenContent() {
-//                        // Set the reference to null so isAdAvailable() returns false.
-//                        appResumeAd = null;
-//                        if (fullScreenContentCallback != null && enableScreenContentCallback) {
-//                            fullScreenContentCallback.onAdDismissedFullScreenContent();
-//                        }
-//                        isShowingAd = false;
-//                        fetchAd(false);
-//                        dismissDialogLoading();
-//                    }
-//
-//                    @Override
-//                    public void onAdFailedToShowFullScreenContent(AdError adError) {
-//                        Log.e(TAG, "onAdFailedToShowFullScreenContent: " + adError.getMessage());
-//                        if (fullScreenContentCallback != null && enableScreenContentCallback) {
-//                            fullScreenContentCallback.onAdFailedToShowFullScreenContent(adError);
-//                        }
-//
-//                        if (currentActivity != null && !currentActivity.isDestroyed() && dialog != null && dialog.isShowing()) {
-//                            Log.d(TAG, "dismiss dialog loading ad open: ");
-//                            try {
-//                                dialog.dismiss();
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                        appResumeAd = null;
-//                        isShowingAd = false;
-//                        fetchAd(false);
-//                    }
-//
-//                    @Override
-//                    public void onAdShowedFullScreenContent() {
-//                        if (fullScreenContentCallback != null && enableScreenContentCallback) {
-//                            fullScreenContentCallback.onAdShowedFullScreenContent();
-//                        }
-//                        isShowingAd = true;
-//                        appResumeAd = null;
-//                    }
-//
-//                    @Override
-//                    public void onAdClicked() {
-//                        super.onAdClicked();
-//                        if (currentActivity != null) {
-//                            FirebaseUtil.logClickAdsEvent(currentActivity, appResumeAdId);
-//                            if (fullScreenContentCallback != null) {
-//                                fullScreenContentCallback.onAdClicked();
-//                            }
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onAdImpression() {
-//                        super.onAdImpression();
-//                        if (currentActivity != null) {
-//                            if (fullScreenContentCallback != null) {
-//                                fullScreenContentCallback.onAdImpression();
-//                            }
-//                        }
-//                    }
-//                });
-//                appResumeAd.show(currentActivity);
-//            }
-////            }, 1000);
-//        }
-//    }
-
     public void loadAdResume() {
         try {
             dismissDialogLoading();
@@ -584,15 +492,13 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         if (appResumeAd == null || currentActivity == null) {
             return;
         }
-        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-            isShowingAdResume = true;
-            if (appResumeAd != null) {
-                appResumeAd.setFullScreenContentCallback(fullScreenContentCallbackNew);
-                isShowingAd = true;
-                appResumeAd.show(currentActivity);
-            }
-
+        isShowingAdResume = true;
+        if (appResumeAd != null) {
+            appResumeAd.setFullScreenContentCallback(fullScreenContentCallbackNew);
+            isShowingAd = true;
+            appResumeAd.show(currentActivity);
         }
+
     }
 
     public FullScreenContentCallback fullScreenContentCallbackNew = new FullScreenContentCallback() {
@@ -750,15 +656,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             }
         }
 
-        if (splashActivity != null && splashActivity.getName().equals(currentActivity.getClass().getName())) {
-            String adId = splashAdId;
-            if (adId == null) {
-                Log.e(TAG, "splash ad id must not be null");
-            }
-            Log.d(TAG, "onStart: load and show splash ads");
-            loadAndShowSplashAds(adId);
-            return;
-        }
         if (isShowingAdResume) return;
         Log.d(TAG, "onStart: show resume ads :" + currentActivity.getClass().getName());
         loadAdResume();
