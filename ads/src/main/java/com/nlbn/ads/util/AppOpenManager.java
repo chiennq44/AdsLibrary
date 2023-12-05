@@ -325,7 +325,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-        currentActivity = null;
+        if (!activity.getClass().getName().equals(AdActivity.class.getName())) {
+            currentActivity = null;
+        }
         Log.d(TAG, "onActivityDestroyed: null");
     }
 
