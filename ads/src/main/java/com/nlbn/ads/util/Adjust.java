@@ -36,12 +36,11 @@ public class Adjust implements Application.ActivityLifecycleCallbacks {
     }
 
     public void trackAdRevenue(AdValue adValue) {
-        if (adsApplication.enableAdjustTracking()) {
+        if (adsApplication != null && adsApplication.enableAdjustTracking()) {
             AdjustAdRevenue revenue = new AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB);
             revenue.setRevenue((double) adValue.getValueMicros() / 1000000, adValue.getCurrencyCode());
             com.adjust.sdk.Adjust.trackAdRevenue(revenue);
         }
-
     }
 
     @Override
