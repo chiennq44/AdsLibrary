@@ -24,6 +24,7 @@ public class ConsentHelper {
 
     public ConsentHelper(Context context) {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        consentInformation = UserMessagingPlatform.getConsentInformation(context);
     }
 
     public static ConsentHelper getInstance(Context context) {
@@ -117,7 +118,8 @@ public class ConsentHelper {
     }
 
     public void reset() {
-        consentInformation.reset();
+        if (consentInformation != null)
+            consentInformation.reset();
     }
 
     public void obtainConsentAndShow(Activity activity, Runnable loadAds) {
