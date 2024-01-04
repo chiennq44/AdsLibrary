@@ -447,6 +447,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     }
 
     Dialog dialog = null;
+
     public void loadAdResume() {
         try {
             dismissDialogLoading();
@@ -470,7 +471,11 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                 @Override
                 public void onAdLoaded(AppOpenAd ad) {
                     AppOpenManager.this.appResumeAd = ad;
-                    AppOpenManager.this.appResumeAd.setOnPaidEventListener(adValue -> {
+                    ad.setOnPaidEventListener(adValue -> {
+                        FirebaseUtil.logPaidAdImpression(currentActivity,
+                            adValue,
+                            ad.getAdUnitId(),
+                            AdType.APP_OPEN);
                     });
                     AppOpenManager.this.appResumeLoadTime = (new Date()).getTime();
                     showResumeAds();
