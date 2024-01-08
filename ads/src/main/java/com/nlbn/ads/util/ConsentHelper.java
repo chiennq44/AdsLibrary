@@ -80,7 +80,7 @@ public class ConsentHelper {
     }
 
     public boolean canLoadAndShowAds() {
-        return isGDPR() && canShowAds() && canShowPersonalizedAds();
+        return canShowAds() || canShowPersonalizedAds();
     }
 
     private boolean hasAttribute(String input, int index) {
