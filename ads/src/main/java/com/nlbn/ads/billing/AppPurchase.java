@@ -716,6 +716,23 @@ public class AppPurchase {
         return String.valueOf(productDetails.getOneTimePurchaseOfferDetails().getPriceAmountMicros() / 1000000);
     }
 
+    public String getFormattedPriceINAP(String productId) {
+        ProductDetails productDetails = skuDetailsINAPMap.get(productId);
+        if (productDetails == null)
+            return "";
+        String formattedPriceINAP = "";
+        List<ProductDetails.SubscriptionOfferDetails> subscriptionOfferDetails = productDetails.getSubscriptionOfferDetails();
+        if (subscriptionOfferDetails != null && subscriptionOfferDetails.size() > 0) {
+            for (ProductDetails.SubscriptionOfferDetails offerDetails : subscriptionOfferDetails) {
+                if (offerDetails.getOfferId() == null) {
+                    formattedPriceINAP = offerDetails.getPricingPhases().getPricingPhaseList().get(0).getFormattedPrice();
+                    break;
+                }
+            }
+        }
+        return formattedPriceINAP;
+    }
+
     public String getPriceSub(String productId) {
         ProductDetails productDetails = skuDetailsSubsMap.get(productId);
         if (productDetails == null)
