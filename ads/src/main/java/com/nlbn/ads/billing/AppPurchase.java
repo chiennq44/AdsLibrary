@@ -713,24 +713,17 @@ public class AppPurchase {
         if (productDetails.getOneTimePurchaseOfferDetails() == null) {
             return "";
         }
-        return String.valueOf(productDetails.getOneTimePurchaseOfferDetails().getPriceAmountMicros() / 1000000);
+        return productDetails.getOneTimePurchaseOfferDetails().getFormattedPrice();
     }
 
     public String getFormattedPriceINAP(String productId) {
         ProductDetails productDetails = skuDetailsINAPMap.get(productId);
         if (productDetails == null)
             return "";
-        String formattedPriceINAP = "";
-        List<ProductDetails.SubscriptionOfferDetails> subscriptionOfferDetails = productDetails.getSubscriptionOfferDetails();
-        if (subscriptionOfferDetails != null && subscriptionOfferDetails.size() > 0) {
-            for (ProductDetails.SubscriptionOfferDetails offerDetails : subscriptionOfferDetails) {
-                if (offerDetails.getOfferId() == null) {
-                    formattedPriceINAP = offerDetails.getPricingPhases().getPricingPhaseList().get(0).getFormattedPrice();
-                    break;
-                }
-            }
+        if (productDetails.getOneTimePurchaseOfferDetails() == null) {
+            return "";
         }
-        return formattedPriceINAP;
+        return String.valueOf(productDetails.getOneTimePurchaseOfferDetails().getPriceAmountMicros() / 1000000);
     }
 
     public String getPriceSub(String productId) {
