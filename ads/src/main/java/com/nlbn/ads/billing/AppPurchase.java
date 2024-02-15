@@ -713,7 +713,7 @@ public class AppPurchase {
         if (productDetails.getOneTimePurchaseOfferDetails() == null) {
             return "";
         }
-        return productDetails.getOneTimePurchaseOfferDetails().getFormattedPrice();
+        return String.valueOf(productDetails.getOneTimePurchaseOfferDetails().getPriceAmountMicros() / 1000000);
     }
 
     public String getFormattedPriceINAP(String productId) {
@@ -723,7 +723,7 @@ public class AppPurchase {
         if (productDetails.getOneTimePurchaseOfferDetails() == null) {
             return "";
         }
-        return String.valueOf(productDetails.getOneTimePurchaseOfferDetails().getPriceAmountMicros() / 1000000);
+        return productDetails.getOneTimePurchaseOfferDetails().getFormattedPrice();
     }
 
     public String getPriceSub(String productId) {
