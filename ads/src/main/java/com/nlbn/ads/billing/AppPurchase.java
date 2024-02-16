@@ -183,25 +183,25 @@ public class AppPurchase {
                 if (listINAPId.size() > 0) {
                     for (String sku : listINAPId) {
                         QueryProductDetailsParams.Product query = QueryProductDetailsParams.Product.newBuilder()
-                                .setProductId(sku)
-                                .setProductType(BillingClient.ProductType.INAPP)
-                                .build();
+                            .setProductId(sku)
+                            .setProductType(BillingClient.ProductType.INAPP)
+                            .build();
                         products.add(query);
                     }
 
                     QueryProductDetailsParams params = QueryProductDetailsParams.newBuilder()
-                            .setProductList(products)
-                            .build();
+                        .setProductList(products)
+                        .build();
 
                     billingClient.queryProductDetailsAsync(params, new ProductDetailsResponseListener() {
-                                @Override
-                                public void onProductDetailsResponse(@NonNull BillingResult billingResult, @NonNull List<ProductDetails> list) {
-                                    Log.d(TAG, "onSkuSubsDetailsResponse: " + list.size());
-                                    skuListINAPFromStore = list;
-                                    isListGot = true;
-                                    addSkuINAPToMap(list);
-                                }
+                            @Override
+                            public void onProductDetailsResponse(@NonNull BillingResult billingResult, @NonNull List<ProductDetails> list) {
+                                Log.d(TAG, "onSkuSubsDetailsResponse: " + list.size());
+                                skuListINAPFromStore = list;
+                                isListGot = true;
+                                addSkuINAPToMap(list);
                             }
+                        }
                     );
                 }
 
@@ -209,25 +209,25 @@ public class AppPurchase {
                     List<QueryProductDetailsParams.Product> productSubs = new ArrayList<>();
                     for (String sku : listSubcriptionId) {
                         QueryProductDetailsParams.Product query = QueryProductDetailsParams.Product.newBuilder()
-                                .setProductId(sku)
-                                .setProductType(BillingClient.ProductType.SUBS)
-                                .build();
+                            .setProductId(sku)
+                            .setProductType(BillingClient.ProductType.SUBS)
+                            .build();
                         productSubs.add(query);
                     }
 
                     QueryProductDetailsParams paramsSub = QueryProductDetailsParams.newBuilder()
-                            .setProductList(productSubs)
-                            .build();
+                        .setProductList(productSubs)
+                        .build();
 
                     billingClient.queryProductDetailsAsync(paramsSub, new ProductDetailsResponseListener() {
-                                @Override
-                                public void onProductDetailsResponse(@NonNull BillingResult billingResult, @NonNull List<ProductDetails> list) {
-                                    Log.d(TAG, "onSkuSubsDetailsResponse: " + list.size());
-                                    skuListSubsFromStore = list;
-                                    isListGot = true;
-                                    addSkuSubsToMap(list);
-                                }
+                            @Override
+                            public void onProductDetailsResponse(@NonNull BillingResult billingResult, @NonNull List<ProductDetails> list) {
+                                Log.d(TAG, "onSkuSubsDetailsResponse: " + list.size());
+                                skuListSubsFromStore = list;
+                                isListGot = true;
+                                addSkuSubsToMap(list);
                             }
+                        }
                     );
                 }
 
@@ -272,9 +272,9 @@ public class AppPurchase {
             listINAPId.add(PRODUCT_ID_TEST);
         }
         billingClient = BillingClient.newBuilder(application)
-                .setListener(purchasesUpdatedListener)
-                .enablePendingPurchases()
-                .build();
+            .setListener(purchasesUpdatedListener)
+            .enablePendingPurchases()
+            .build();
 
         billingClient.startConnection(purchaseClientStateListener);
     }
@@ -287,9 +287,9 @@ public class AppPurchase {
 //            listINAPId.add(PRODUCT_ID_TEST);
 //        }
         billingClient = BillingClient.newBuilder(application)
-                .setListener(purchasesUpdatedListener)
-                .enablePendingPurchases()
-                .build();
+            .setListener(purchasesUpdatedListener)
+            .enablePendingPurchases()
+            .build();
 
         billingClient.startConnection(purchaseClientStateListener);
     }
@@ -451,23 +451,16 @@ public class AppPurchase {
 
         idPurchaseCurrent = productId;
         typeIap = TYPE_IAP.PURCHASE;
-        List<ProductDetails.SubscriptionOfferDetails> offerDetails = productDetails.getSubscriptionOfferDetails();
-        if (offerDetails == null) {
-            return "Product ID invalid";
-        }
-
-        String offerToken = offerDetails.get(0).getOfferToken();
         ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
-                ImmutableList.from(
-                        BillingFlowParams.ProductDetailsParams.newBuilder()
-                                .setProductDetails(productDetails)
-                                .setOfferToken(offerToken)
-                                .build()
-                );
+            ImmutableList.from(
+                BillingFlowParams.ProductDetailsParams.newBuilder()
+                    .setProductDetails(productDetails)
+                    .build()
+            );
 
         BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-                .setProductDetailsParamsList(productDetailsParamsList)
-                .build();
+            .setProductDetailsParamsList(productDetailsParamsList)
+            .build();
         BillingResult responseCode = billingClient.launchBillingFlow(activity, billingFlowParams);
 
         switch (responseCode.getResponseCode()) {
@@ -549,16 +542,16 @@ public class AppPurchase {
 
         String offerToken = offerDetails.get(0).getOfferToken();
         ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
-                ImmutableList.from(
-                        BillingFlowParams.ProductDetailsParams.newBuilder()
-                                .setProductDetails(productDetails)
-                                .setOfferToken(offerToken)
-                                .build()
-                );
+            ImmutableList.from(
+                BillingFlowParams.ProductDetailsParams.newBuilder()
+                    .setProductDetails(productDetails)
+                    .setOfferToken(offerToken)
+                    .build()
+            );
 
         BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
-                .setProductDetailsParamsList(productDetailsParamsList)
-                .build();
+            .setProductDetailsParamsList(productDetailsParamsList)
+            .build();
         BillingResult responseCode = billingClient.launchBillingFlow(activity, billingFlowParams);
 
         switch (responseCode.getResponseCode()) {
@@ -628,9 +621,9 @@ public class AppPurchase {
                         if (purchase.getSkus().contains(productId)) {
                             try {
                                 ConsumeParams consumeParams =
-                                        ConsumeParams.newBuilder()
-                                                .setPurchaseToken(purchase.getPurchaseToken())
-                                                .build();
+                                    ConsumeParams.newBuilder()
+                                        .setPurchaseToken(purchase.getPurchaseToken())
+                                        .build();
 
                                 ConsumeResponseListener listener = new ConsumeResponseListener() {
                                     @Override
@@ -666,9 +659,9 @@ public class AppPurchase {
         purchaseListioner.onProductPurchased(purchase.getOrderId(), purchase.getOriginalJson());
         if (isConsumePurchase) {
             ConsumeParams consumeParams =
-                    ConsumeParams.newBuilder()
-                            .setPurchaseToken(purchase.getPurchaseToken())
-                            .build();
+                ConsumeParams.newBuilder()
+                    .setPurchaseToken(purchase.getPurchaseToken())
+                    .build();
 
             ConsumeResponseListener listener = new ConsumeResponseListener() {
                 @Override
@@ -683,9 +676,9 @@ public class AppPurchase {
         } else {
             if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
                 AcknowledgePurchaseParams acknowledgePurchaseParams =
-                        AcknowledgePurchaseParams.newBuilder()
-                                .setPurchaseToken(purchase.getPurchaseToken())
-                                .build();
+                    AcknowledgePurchaseParams.newBuilder()
+                        .setPurchaseToken(purchase.getPurchaseToken())
+                        .build();
                 if (!purchase.isAcknowledged()) {
                     billingClient.acknowledgePurchase(acknowledgePurchaseParams, new AcknowledgePurchaseResponseListener() {
                         @Override
