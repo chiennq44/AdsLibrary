@@ -716,6 +716,16 @@ public class AppPurchase {
         return String.valueOf(productDetails.getOneTimePurchaseOfferDetails().getPriceAmountMicros() / 1000000);
     }
 
+    public String getFormattedPriceINAP(String productId) {
+        ProductDetails productDetails = skuDetailsINAPMap.get(productId);
+        if (productDetails == null)
+            return "";
+        if (productDetails.getOneTimePurchaseOfferDetails() == null) {
+            return "";
+        }
+        return productDetails.getOneTimePurchaseOfferDetails().getFormattedPrice();
+    }
+
     public String getPriceSub(String productId) {
         ProductDetails productDetails = skuDetailsSubsMap.get(productId);
         if (productDetails == null)
