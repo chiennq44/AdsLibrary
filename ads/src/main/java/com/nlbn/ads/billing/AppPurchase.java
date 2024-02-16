@@ -64,7 +64,7 @@ public class AppPurchase {
     private BillingListener billingListener;
     private Boolean isInitBillingFinish = false;
     private BillingClient billingClient;
-    private List<QueryProductDetailsParams.Product> skuListINAPFromStore;
+    private List<ProductDetails> skuListINAPFromStore;
     private List<ProductDetails> skuListSubsFromStore;
     final private Map<String, ProductDetails> skuDetailsINAPMap = new HashMap<>();
     final private Map<String, ProductDetails> skuDetailsSubsMap = new HashMap<>();
@@ -197,7 +197,7 @@ public class AppPurchase {
                                 @Override
                                 public void onProductDetailsResponse(@NonNull BillingResult billingResult, @NonNull List<ProductDetails> list) {
                                     Log.d(TAG, "onSkuSubsDetailsResponse: " + list.size());
-                                    skuListSubsFromStore = list;
+                                    skuListINAPFromStore = list;
                                     isListGot = true;
                                     addSkuINAPToMap(list);
                                 }
