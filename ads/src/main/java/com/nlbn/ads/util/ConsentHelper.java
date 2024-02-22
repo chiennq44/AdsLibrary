@@ -153,7 +153,10 @@ public class ConsentHelper {
                     handleConsentResult(activity, consentInformation, loadAds);
                 });
             },
-            error -> Log.w("AD_HANDLER", error.getErrorCode() + ": " + error.getMessage()));
+            error -> {
+                Log.w("AD_HANDLER", error.getErrorCode() + ": " + error.getMessage());
+                loadAds.run();
+            });
 
     }
 
