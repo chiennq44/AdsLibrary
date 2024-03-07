@@ -1528,7 +1528,6 @@ public class Admob {
 
                 NativeAdOptions adOptions = new NativeAdOptions.Builder()
                     .setVideoOptions(videoOptions)
-                    .setAdChoicesPlacement(NativeAdOptions.ADCHOICES_BOTTOM_LEFT)
                     .build();
                 AdLoader adLoader = new AdLoader.Builder(context, id)
                     .forNativeAd(nativeAd -> {
