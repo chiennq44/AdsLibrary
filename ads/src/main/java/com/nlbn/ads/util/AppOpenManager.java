@@ -62,6 +62,8 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     private final List<Class> disabledAppOpenList;
     private Class splashActivity;
 
+    private AdCallback resumeCallback;
+
     private boolean isTimeout = false;
     private static final int TIMEOUT_MSG = 11;
 
@@ -135,6 +137,10 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
     public void setInterstitialShowing(boolean interstitialShowing) {
         isInterstitialShowing = interstitialShowing;
+    }
+
+    public void setResumeCallback(AdCallback callback){
+        resumeCallback = callback;
     }
 
     /**
@@ -517,6 +523,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             isShowingAd = false;
             isShowingAdResume = false;
             dismissDialogLoading();
+            if (resumeCallback!=null){
+                resumeCallback.onAdClosed();
+            }
         }
 
         @Override
@@ -525,16 +534,25 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             isShowingAd = false;
             isShowingAdResume = false;
             dismissDialogLoading();
+            if (resumeCallback!=null){
+                resumeCallback.onAdFailedToShow(adError);
+            }
         }
 
         @Override
         public void onAdShowedFullScreenContent() {
+            if (resumeCallback!=null){
+                resumeCallback.onAdLoaded();
+            }
             Log.e(TAG, "onAdShowedFullScreenContent: ");
         }
 
         @Override
         public void onAdClicked() {
             super.onAdClicked();
+            if (resumeCallback!=null){
+                resumeCallback.onAdClicked();
+            }
             if (currentActivity != null) {
                 FirebaseUtil.logClickAdsEvent(currentActivity, appResumeAdId);
                 if (fullScreenContentCallback != null) {
@@ -546,6 +564,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         @Override
         public void onAdImpression() {
             super.onAdImpression();
+            if (resumeCallback!=null){
+                resumeCallback.onAdImpression();
+            }
             if (currentActivity != null) {
                 if (fullScreenContentCallback != null) {
                     fullScreenContentCallback.onAdImpression();
