@@ -42,6 +42,7 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MediaAspectRatio;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.RequestConfiguration;
@@ -1587,6 +1588,65 @@ public class Admob {
                 NativeAdOptions adOptions = new NativeAdOptions.Builder()
                     .setVideoOptions(videoOptions)
                     .setAdChoicesPlacement(adChoicesPlacement)
+                    .build();
+                AdLoader adLoader = new AdLoader.Builder(context, id)
+                    .forNativeAd(nativeAd -> {
+                        callback.onNativeAdLoaded(nativeAd);
+                        nativeAd.setOnPaidEventListener(adValue -> {
+                            Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
+                            FirebaseUtil.logPaidAdImpression(context,
+                                adValue,
+                                id,
+                                AdType.NATIVE);
+                            callback.onEarnRevenue((double) adValue.getValueMicros());
+                        });
+                    })
+                    .withAdListener(new AdListener() {
+                        @Override
+                        public void onAdFailedToLoad(LoadAdError error) {
+                            Log.e(TAG, "NativeAd onAdFailedToLoad: " + error.getMessage());
+                            callback.onAdFailedToLoad();
+                        }
+
+                        @Override
+                        public void onAdClicked() {
+                            super.onAdClicked();
+                            if (disableAdResumeWhenClickAds)
+                                AppOpenManager.getInstance().disableAdResumeByClickAction();
+                            FirebaseUtil.logClickAdsEvent(context, id);
+                            if (timeLimitAds > 1000) {
+                                setTimeLimitNative();
+                                if (callback != null) {
+                                    callback.onAdFailedToLoad();
+                                }
+                            }
+                        }
+                    })
+                    .withNativeAdOptions(adOptions)
+                    .build();
+                adLoader.loadAd(getAdRequest());
+            } else {
+                callback.onAdFailedToLoad();
+            }
+        } else {
+            callback.onAdFailedToLoad();
+        }
+    }
+
+    public void loadNativeAdFullScreen(Context context, String id, int mediaAspectRatio, final NativeCallback callback) {
+        if (AppPurchase.getInstance().isPurchased(context) || !isShowAllAds || !isNetworkConnected()) {
+            callback.onAdFailedToLoad();
+            return;
+        }
+        if (isShowNative) {
+            if (isNetworkConnected()) {
+                VideoOptions videoOptions = new VideoOptions.Builder()
+                    .setStartMuted(true)
+                    .build();
+
+                NativeAdOptions adOptions = new NativeAdOptions.Builder()
+                    .setVideoOptions(videoOptions)
+                    .setMediaAspectRatio(MediaAspectRatio.LANDSCAPE)
                     .build();
                 AdLoader adLoader = new AdLoader.Builder(context, id)
                     .forNativeAd(nativeAd -> {
