@@ -1641,7 +1641,8 @@ public class Admob {
         if (isShowNative) {
             if (isNetworkConnected()) {
                 VideoOptions videoOptions = new VideoOptions.Builder()
-                    .setStartMuted(true)
+                    .setStartMuted(false)
+                    .setCustomControlsRequested(true)
                     .build();
 
                 NativeAdOptions adOptions = new NativeAdOptions.Builder()
