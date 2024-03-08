@@ -1647,7 +1647,7 @@ public class Admob {
 
                 NativeAdOptions adOptions = new NativeAdOptions.Builder()
                     .setVideoOptions(videoOptions)
-                    .setMediaAspectRatio(MediaAspectRatio.LANDSCAPE)
+                    .setMediaAspectRatio(mediaAspectRatio)
                     .build();
                 AdLoader adLoader = new AdLoader.Builder(context, id)
                     .forNativeAd(nativeAd -> {
