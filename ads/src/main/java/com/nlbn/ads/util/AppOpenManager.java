@@ -17,6 +17,7 @@ import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.google.android.gms.ads.AdActivity;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.nlbn.ads.billing.AppPurchase;
 import com.nlbn.ads.callback.AdCallback;
 import com.nlbn.ads.dialog.LoadingAdsDialog;
@@ -139,7 +140,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         isInterstitialShowing = interstitialShowing;
     }
 
-    public void setResumeCallback(AdCallback callback){
+    public void setResumeCallback(AdCallback callback) {
         resumeCallback = callback;
     }
 
@@ -293,6 +294,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+        FirebaseAnalytics.getInstance(activity).logEvent(activity.getClass().getSimpleName(), new Bundle());
     }
 
     @Override
@@ -523,7 +525,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             isShowingAd = false;
             isShowingAdResume = false;
             dismissDialogLoading();
-            if (resumeCallback!=null){
+            if (resumeCallback != null) {
                 resumeCallback.onAdClosed();
             }
         }
@@ -534,14 +536,14 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             isShowingAd = false;
             isShowingAdResume = false;
             dismissDialogLoading();
-            if (resumeCallback!=null){
+            if (resumeCallback != null) {
                 resumeCallback.onAdFailedToShow(adError);
             }
         }
 
         @Override
         public void onAdShowedFullScreenContent() {
-            if (resumeCallback!=null){
+            if (resumeCallback != null) {
                 resumeCallback.onAdLoaded();
             }
             Log.e(TAG, "onAdShowedFullScreenContent: ");
@@ -550,7 +552,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         @Override
         public void onAdClicked() {
             super.onAdClicked();
-            if (resumeCallback!=null){
+            if (resumeCallback != null) {
                 resumeCallback.onAdClicked();
             }
             if (currentActivity != null) {
@@ -564,7 +566,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         @Override
         public void onAdImpression() {
             super.onAdImpression();
-            if (resumeCallback!=null){
+            if (resumeCallback != null) {
                 resumeCallback.onAdImpression();
             }
             if (currentActivity != null) {
